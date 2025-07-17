@@ -10,7 +10,7 @@
 - 🧵 **Multithreaded Execution** – Speed up augmentation with producer-consumer threading
 - 🔧 **Configurable via CLI** – Run augmentations without writing any code
 - 🎯 **Deterministic Output** – Consistent results via seed control (planned)
-- 📷 **Generic Support** – Not limited to paired images or specific domains
+⚡ Built for Speed – Engineered for high-throughput augmentation on large datasets
 
 ---
 
