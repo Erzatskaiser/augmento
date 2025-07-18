@@ -1,24 +1,33 @@
-// Emmanuel Butsana, 03 June 2025, pipeline.cpp
-// Implementation of the pipeline class
+/**
+ * @file pipeline.cpp
+ * @brief Implementation of the Pipeline class for applying image augmentations.
+ * @author Emmanuel Butsana
+ * @date Initial release: June 3, 2025
+ */
 
-#include "extra.hpp"
+//TODO: Add new operations, addOperationWithName, verbosity, metadata of ops applied
 
-/* Default constructor */
+#include "pipeline.hpp"
+#include "image.hpp"
+#include "manipulations.hpp"
+
+#include <random>
+#include <unordered_map>
+
+/* Constructor with optional base seed */
 Pipeline::Pipeline(unsigned int seed) : base_seed_(seed) {}
 
-/* Add operation to the pipeline */
+/* Add an operation to the pipeline with an associated execution probability */
 void Pipeline::addOperation(std::function<void(Image&, std::mt19937&)> op, double prob) {
   operations_.push_back(Operation{op, prob});
 }
 
-/* Pass image through the pipeline, without preset seed */
+/* Apply the pipeline to an image using internal seeding based on image ID */
 void Pipeline::apply(Image& img) {
-  // Generate random number between 0 and 1
   thread_local std::mt19937 rand;
   rand.seed(base_seed_ + static_cast<unsigned int>(img.getId()));
   std::uniform_real_distribution<double> dist(0.0, 1.0);
 
-  // Check whether operation will be executed
   for (const auto& op : operations_) {
     if (dist(rand) < op.prob) {
       op.func(img, rand);
@@ -26,14 +35,12 @@ void Pipeline::apply(Image& img) {
   }
 }
 
-/* Pass image through the piepeline, with preset seed */
+/* Apply the pipeline to an image using an externally provided seed */
 void Pipeline::apply(Image& img, unsigned int seed) {
-  // Generate random number between 0 and 1
   thread_local std::mt19937 rand;
   rand.seed(seed);
   std::uniform_real_distribution<double> dist(0.0, 1.0);
 
-  // Check whether operation will be executed
   for (const auto& op : operations_) {
     if (dist(rand) < op.prob) {
       op.func(img, rand);
@@ -41,22 +48,18 @@ void Pipeline::apply(Image& img, unsigned int seed) {
   }
 }
 
-/* Configure pipeline upon instantiation */
+/* Configure a pipeline from a map of probabilities */
 Pipeline configurePipeline(const std::unordered_map<std::string, double>& probs,
                            unsigned int seed) {
   Pipeline pipeline(seed);
 
-  // Rotation (random angle)
   pipeline.addOperation(
     [](Image& img, std::mt19937& rng) {
       std::uniform_real_distribution<double> angleDist(-30.0, 30.0);
-      double angle = angleDist(rng);
-      img.setData(rotateImageCrop(img.getData(), angle));
+      img.setData(rotateImageCrop(img.getData(), angleDist(rng)));
     },
-    probs.at("rotate")
-  );
+    probs.at("rotate"));
 
-  // Reflect (horizontal or vertical)
   pipeline.addOperation(
     [](Image& img, std::mt19937& rng) {
       std::uniform_int_distribution<int> axisDist(0, 1);
@@ -66,62 +69,48 @@ Pipeline configurePipeline(const std::unordered_map<std::string, double>& probs,
       else
         reflectImageHorizontal(img.getData());
     },
-    probs.at("reflect")
-  );
+    probs.at("reflect"));
 
-  // Histogram equalization
   pipeline.addOperation(
     [](Image& img, std::mt19937&) {
       histogramEqualization(img.getData());
     },
-    probs.at("hist_eq")
-  );
+    probs.at("hist_eq"));
 
-  // White balance
   pipeline.addOperation(
     [](Image& img, std::mt19937&) {
       whiteBalance(img.getData());
     },
-    probs.at("white_balance")
-  );
+    probs.at("white_balance"));
 
-  // Brightness adjustment
   pipeline.addOperation(
     [](Image& img, std::mt19937& rng) {
       std::uniform_real_distribution<double> dist(-50.0, 50.0);
       adjustBrightness(img.getData(), dist(rng));
     },
-    probs.at("brightness")
-  );
+    probs.at("brightness"));
 
-  // Contrast
   pipeline.addOperation(
     [](Image& img, std::mt19937& rng) {
       std::uniform_real_distribution<double> dist(0.8, 1.5);
       adjustContrast(img.getData(), dist(rng));
     },
-    probs.at("contrast")
-  );
+    probs.at("contrast"));
 
-  // Saturation adjustment
   pipeline.addOperation(
     [](Image& img, std::mt19937& rng) {
       std::uniform_real_distribution<double> dist(0.7, 1.3);
       adjustSaturation(img.getData(), dist(rng));
     },
-    probs.at("saturation")
-  );
+    probs.at("saturation"));
 
-  // Hue adjustment
   pipeline.addOperation(
     [](Image& img, std::mt19937& rng) {
       std::uniform_int_distribution<int> dist(-10, 10);
       adjustHue(img.getData(), dist(rng));
     },
-    probs.at("hue")
-  );
+    probs.at("hue"));
 
-  // Noise injection
   pipeline.addOperation(
     [](Image& img, std::mt19937& rng) {
       std::normal_distribution<double> noiseMeanDist(0.0, 30.0);
@@ -129,10 +118,8 @@ Pipeline configurePipeline(const std::unordered_map<std::string, double>& probs,
       double stdev = std::abs(noiseMeanDist(rng));
       injectNoise(img.getData(), mean, stdev);
     },
-    probs.at("noise")
-  );
+    probs.at("noise"));
 
-  // Blur image
   pipeline.addOperation(
     [](Image& img, std::mt19937& rng) {
       std::uniform_int_distribution<int> dist(1, 5);
@@ -140,18 +127,14 @@ Pipeline configurePipeline(const std::unordered_map<std::string, double>& probs,
       if (k % 2 == 0) ++k;
       blurImage(img.getData(), k);
     },
-    probs.at("blur")
-  );
+    probs.at("blur"));
 
-  // Sharpen image
   pipeline.addOperation(
     [](Image& img, std::mt19937&) {
       sharpenImage(img.getData());
     },
-    probs.at("sharpen")
-  );
+    probs.at("sharpen"));
 
-  // Return pipeline object
   return pipeline;
 }
 

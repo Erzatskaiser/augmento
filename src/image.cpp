@@ -1,12 +1,21 @@
-// Emmanuel Butsana, 03 June 2025, image.cpp
-// Defines the image class from extra.hpp
+/**
+ * @file image.cpp
+ * @brief Implementation of the Image class defined in image.hpp.
+ * @author Emmanuel Butsana
+ * @date Initial release: June 3, 2025
+ */
 
-#include "extra.hpp"
+#include "../include/image.hpp"
 
-/* Initialize global Id */
+#include <filesystem>
+#include <iostream>
+
+namespace fs = std::filesystem;
+
+/* Initialize global ID counter */
 std::atomic<size_t> Image::global_id_{0};
 
-/* Default contructor */
+/* Default constructor */
 Image::Image() : data_(), name_(""), id_(global_id_++) {}
 
 /* Constructor from existing cv::Mat */
@@ -14,57 +23,47 @@ Image::Image(const cv::Mat& in, const std::string& name)
     : data_(in.clone()), name_(name), id_(global_id_++) {}
 
 /* Constructor from file path */
-Image::Image(const std::string& path) {
-  name_ = path;
+Image::Image(const std::string& path) : name_(path), id_(global_id_++) {
   data_ = cv::imread(path);
-  id_ = global_id_++;
   if (data_.empty()) {
-    std::cerr << "Error: Image could not be loaded from " << path << std::endl;
+    std::cerr << "Error: Failed to load image from " << path << std::endl;
   }
 }
 
-/* Retrieve stored image data (mutable) */
+/* Retrieve mutable reference to image data */
 cv::Mat& Image::getData() { return data_; }
 
-/* Retrieve stored image data (non-mutable) */
+/* Retrieve const reference to image data */
 const cv::Mat& Image::getData() const { return data_; }
 
-/* Replace image data */
+/* Replace image data with a copy of the input */
 void Image::setData(const cv::Mat& newData) { data_ = newData.clone(); }
 
-/* Set the image name */
+/* Set image name */
 void Image::setName(const std::string& name) { name_ = name; }
 
-/* Get the image name */
+/* Get image name */
 const std::string& Image::getName() const { return name_; }
 
-/* Get the image id */
+/* Get globally unique image ID */
 const size_t Image::getId() const { return id_; }
 
-/* Save image to file */
+/* Save image to specified path and extension */
 int Image::save(const std::string& path, const std::string& ext) const {
   if (path.empty()) return -1;
-  namespace fs = std::filesystem;
 
-  // If path does exist, create folder
+  // Create output directory if it doesn't exist
   if (!fs::exists(path)) {
     if (!fs::create_directories(fs::path(path))) return -1;
   }
 
-  // Make default name if name is empty
-  std::string temp = name_;
-  if (name_.empty()) {
-    temp = "image_" + std::to_string(id_) + ext;
-  }
+  // Determine filename
+  std::string base = name_.empty() ? "image_" + std::to_string(id_) : fs::path(name_).stem().string();
+  fs::path outputPath = fs::path(path) / (base + ext);
 
-  // Extract basename
-  fs::path pathObj(temp);
-  std::string stem = pathObj.stem().string();
+  // Write image to file
+  if (!cv::imwrite(outputPath.string(), data_)) return -1;
 
-  // Compose filename and full path
-  std::string filename = stem + ext;
-  fs::path outputPath = fs::path(path) / filename;
-
-  if (!cv::imwrite(outputPath, data_)) return -1;
   return 0;
 }
+
