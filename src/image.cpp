@@ -58,7 +58,8 @@ int Image::save(const std::string& path, const std::string& ext) const {
   }
 
   // Determine filename
-  std::string base = name_.empty() ? "image_" + std::to_string(id_) : fs::path(name_).stem().string();
+  std::string base = name_.empty() ? "image_" + std::to_string(id_)
+                                   : fs::path(name_).stem().string();
   fs::path outputPath = fs::path(path) / (base + ext);
 
   // Write image to file
@@ -66,4 +67,3 @@ int Image::save(const std::string& path, const std::string& ext) const {
 
   return 0;
 }
-

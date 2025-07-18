@@ -65,8 +65,8 @@ std::vector<std::vector<fs::path>> splitFilesIntoPiles(const std::string& dir,
 }
 
 /* Split files in directory among workers, in pairs */
-std::vector<std::vector<std::pair<fs::path, fs::path>>>
-splitPairsIntoPiles(const std::string& dir, size_t workers = 6) {
+std::vector<std::vector<std::pair<fs::path, fs::path>>> splitPairsIntoPiles(
+    const std::string& dir, size_t workers = 6) {
   std::unordered_map<std::string, std::pair<fs::path, fs::path>> paired;
   namespace fs = std::filesystem;
 
@@ -97,7 +97,8 @@ splitPairsIntoPiles(const std::string& dir, size_t workers = 6) {
   }
 
   // Shuffle and split
-  std::sort(fullPairs.begin(), fullPairs.end());  // Optional: deterministic order
+  std::sort(fullPairs.begin(),
+            fullPairs.end());  // Optional: deterministic order
   std::vector<std::vector<std::pair<fs::path, fs::path>>> piles(workers);
   size_t index = 0;
   for (const auto& pair : fullPairs) {
@@ -107,8 +108,6 @@ splitPairsIntoPiles(const std::string& dir, size_t workers = 6) {
 
   return piles;
 }
-
-
 
 int main(int argc, char* argv[]) {
   // Attempt to read folder path with -i flag and outpt with -o
@@ -127,7 +126,7 @@ int main(int argc, char* argv[]) {
 
   // Initialize and configure pipeline
   std::unordered_map<std::string, double> probs = {
-      {"rotate", 0},        {"reflect", 0.6},    {"hist_eq", 0.6},
+      {"rotate", 0},          {"reflect", 0.6},    {"hist_eq", 0.6},
       {"white_balance", 0.6}, {"brightness", 0.6}, {"contrast", 0.6},
       {"saturation", 0.6},    {"hue", 0.6},        {"noise", 0.9},
       {"blur", 0.6},          {"sharpen", 0.4}};
@@ -135,7 +134,7 @@ int main(int argc, char* argv[]) {
   std::cout << "Initialized pipeline..." << std::endl;
 
   // Split the files between 6 worker threads
-  //auto piles = splitFilesIntoPiles(iPath, 6);
+  // auto piles = splitFilesIntoPiles(iPath, 6);
   auto paired_piles = splitPairsIntoPiles(iPath, 6);
   std::cout << "Split files between workers, starting..." << std::endl;
 

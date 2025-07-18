@@ -13,6 +13,9 @@
 #include <opencv2/core.hpp>
 #include <opencv2/imgcodecs.hpp>
 #include <opencv2/imgproc.hpp>
+#include <stdexcept>
+#include <string>
+#include <random>
 #include <cmath>
 
 #define PI 3.14159
@@ -67,6 +70,14 @@ int reflectImageVertical(cv::Mat& im);
  * @return Resized image with the specified dimensions.
  */
 cv::Mat resizeImage(const cv::Mat& im, int width, int height);
+
+/**
+ * @brief Resize an image using a scale factor.
+ * @param im Input image to resize.
+ * @param scale Scale factor.
+ * @return Resized image with the specified scale.
+ */
+cv::Mat resizeImage(const cv::Mat& im, int scale);
 
 /**
  * @brief Crop a fixed region from the input image.

@@ -16,14 +16,14 @@ void producerThread(const std::vector<fs::path>& files, SafeQueue<Image>& queue,
 }
 
 /* Producer thread function, paired augmentation */
-void pairedProducerThread(const std::vector<std::pair<fs::path, fs::path>>& pairs,
-                          SafeQueue<Image>& queue, Pipeline& pipeline,
-                          int iter) {
-
+void pairedProducerThread(
+    const std::vector<std::pair<fs::path, fs::path>>& pairs,
+    SafeQueue<Image>& queue, Pipeline& pipeline, int iter) {
   // Apply the same augmentation to images in pairs
   for (const auto& [front, side] : pairs) {
     if (front.empty() || side.empty()) continue;
-    std::string id = front.stem().string().substr(0,front.stem().string().find("_"));
+    std::string id =
+        front.stem().string().substr(0, front.stem().string().find("_"));
 
     // Create as many augmentations as are required
     for (int i = 0; i < iter; ++i) {

@@ -1,5 +1,14 @@
-// Emmanuel Butsana, 27 May 2025, manipulations.cpp
-// File containing core image manipulations implemented
+/**
+ * @file manipulations.cpp
+ * @brief Implementation of core image augmentation operations used in augmento.
+ * @author Emmanuel Butsana
+ * @date Initial release: May 27, 2025
+ *
+ * This file implements the image transformation and filtering functions
+ * declared in manipulations.hpp. These include operations for cropping,
+ * resizing, rotating, brightness and contrast adjustment, blurring, sharpening,
+ * and more.
+ */
 
 #include "manipulations.hpp"
 
@@ -90,6 +99,89 @@ int reflectImageVertical(cv::Mat &im) {
   if (im.empty()) return -1;
   cv::flip(im, im, 0);
   return 0;
+}
+
+/** resizeImage **/
+cv::Mat resizeImage(const cv::Mat &im, int width, int height) {
+  if (im.empty()) return cv::Mat();
+
+  cv::Mat res;
+  cv::resize(im, res, cv::Size(width, height));
+  return res;
+}
+
+/** resizeImage **/
+cv::Mat resizeImage(const cv::Mat &im, int scale) {
+  if (im.empty()) return cv::Mat();
+
+  cv::Mat res;
+  cv::resize(im, res, cv::Size(), scale, scale, cv::INTER_LINEAR);
+  return res;
+}
+
+/** cropImage **/
+cv::Mat cropImage(const cv::Mat &im, int x, int y, int width, int height) {
+  if (im.empty()) return cv::Mat();
+
+  // Crop dimensions are larger than image dimensions
+  if (width > im.cols || im.rows < crop_height) {
+    throw std::invalid_argument(
+        "cropImage: crop size (" + std::to_string(width) + "x" +
+        std::to_string(height) + ") exceeds input image dimensions (" +
+        std::to_string(im.cols) + "x" + std::to_string(im.rows) + ").");
+  }
+
+  // Start point is not in image
+  if (x < 0 || y < 0 || x > im.cols || y > im.rows) {
+    throw std::invalid_argument("cropImage: start point of (" +
+                                std::to_string(x) + "," + std::to_string(y) +
+                                ") is outside the bounds of the image.");
+  }
+
+  // Crop area is bigger than normal area
+  if (x + width >= im.cols || y + height >= im.rows) {
+    throw std::invalid_argument(
+        "cropImage: Attempting to crop area larger than image of (" +
+        std::to_string(im.cols) + "," + std::to_string(im.rows) + ").");
+  }
+
+  cv::Rect roi(x, y, width, height);
+  cv::Mat crop = im(roi).clone();
+  return crop;
+}
+
+/** randomCrop **/
+cv::Mat randomCrop(const cv::Mat &im, int width, int height) {
+  if (im.empty()) return cv::Mat();
+
+  // Crop size exceeds image size
+  if (width > im.cols || height > im.rows) {
+    throw std::invalid_argument(
+        "randomCrop: crop size (" + std::to_string(width) + "x" +
+        std::to_string(height) + ") exceeds the image dimensions (" +
+        std::to_string(im.cols) + "x" + std::to_string(im.rows) + ").");
+  }
+
+  // Randomly set starting point (x,y)
+  std::random_device rand;
+  std::mt19937 gen(rand());
+  std::uniform_int_distribution<int> xdist(0, im.rows);
+  std::uniform_int_distribution<int> ydist(0, im.cols);
+  int x = xdist(gen);
+  int y = ydist(gen);
+
+  cv::Rect roi(x, y, width, height);
+  cv::Mat crop = im(roi).clone();
+  return crop;
+}
+
+/** affineTransform **/
+cv::Mat affineTransform(const cv::Mat &im, cons cv::Mat &matrix) {
+  if (im.empty()) return cv::Mat() if (matrix.empty()) return im;
+
+  cv::Mat warp;
+  cv::warpAffine(im, warp, matrix, im.size());
+  return warp;
 }
 
 /** histogramEqualization **/
