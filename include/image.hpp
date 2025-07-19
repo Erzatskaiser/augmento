@@ -14,8 +14,8 @@
 #include <opencv2/core.hpp>
 #include <opencv2/imgcodecs.hpp>
 #include <string>
+#include <vector>
 #include <filesystem>
-#include <iostream>
 
 /**
  * @class Image
@@ -57,6 +57,9 @@ class Image {
   /// @return Globally unique image ID.
   const size_t getId() const;
 
+  /// @return Image operation history.
+  const std::vector<std::string>& getHistory() const;
+
   /**
    * @brief Set image data.
    * @param in New image matrix to set.
@@ -64,10 +67,25 @@ class Image {
   void setData(const cv::Mat& in);
 
   /**
+   * @brief Logs operation applied to image.
+   * @param op String detailing operation applied.
+   * @return 0 on sucess, -1 on failure.
+   */
+  int logOperation(const std::string& op);
+
+  /**
    * @brief Set image name or ID.
    * @param name New name string.
    */
   void setName(const std::string& name);
+
+  /**
+   * @beif Display image in resizable preview window.
+   * @param window_name Optional name for display window.
+   * @param wait_ms Duuration of wait in milliseconds (0 =  wait indefinitely).
+   * return 0 on success, -1 on failure.
+   */
+  int preview(const std::string& window_name, int wait_ms = 0) const;
 
   /**
    * @brief Save image to disk.
@@ -81,6 +99,7 @@ class Image {
   cv::Mat data_;              ///< Raw image matrix.
   std::string name_;          ///< Optional image name or identifier.
   size_t id_;                 ///< Unique image ID.
+  std::vector<std::string> history_;     ///< Operation history log.
   static std::atomic<size_t> global_id_; ///< Global counter for assigning unique IDs.
 };
 

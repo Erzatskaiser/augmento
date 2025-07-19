@@ -45,6 +45,20 @@ const std::string& Image::getName() const { return name_; }
 /* Get globally unique image ID */
 const size_t Image::getId() const { return id_; }
 
+/* Preview image in resizable window */
+int Image::preview(cosnt std::string& window_name, int wait_ms) const {
+  if (data_.empty()) return -1;
+
+  std::string win = window_name.empty() ? name_ : window_name;
+  if (win.empty()) win = "Preview_" + std::to_string(id_);
+
+  cv::namedWindow(win, cv::WINDOW_NORMAL);
+  cv::imshow(win, data_);
+  cv::waitKey(wait_ms);
+  cv::destroyWindow(win);
+  return 0;
+}
+
 /* Save image to specified path and extension */
 int Image::save(const std::string& path, const std::string& ext) const {
   if (path.empty()) return -1;
