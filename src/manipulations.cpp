@@ -10,7 +10,7 @@
  * and more.
  */
 
-#include "manipulations.hpp"
+#include "../include/manipulations.hpp"
 
 /** rotateImageNoCrop **/
 cv::Mat rotateImageNoCrop(const cv::Mat &im, double deg) {
@@ -124,7 +124,7 @@ cv::Mat cropImage(const cv::Mat &im, int x, int y, int width, int height) {
   if (im.empty()) return cv::Mat();
 
   // Crop dimensions are larger than image dimensions
-  if (width > im.cols || im.rows < crop_height) {
+  if (width > im.cols || im.rows < height) {
     throw std::invalid_argument(
         "cropImage: crop size (" + std::to_string(width) + "x" +
         std::to_string(height) + ") exceeds input image dimensions (" +
@@ -176,12 +176,63 @@ cv::Mat randomCrop(const cv::Mat &im, int width, int height) {
 }
 
 /** affineTransform **/
-cv::Mat affineTransform(const cv::Mat &im, cons cv::Mat &matrix) {
-  if (im.empty()) return cv::Mat() if (matrix.empty()) return im;
+cv::Mat affineTransform(const cv::Mat &im, const cv::Mat &matrix) {
+  if (im.empty()) return cv::Mat();
+  if (matrix.empty()) return im;
 
   cv::Mat warp;
   cv::warpAffine(im, warp, matrix, im.size());
   return warp;
+}
+
+/** colorJitter **/
+int colorJitter(cv::Mat &im, double brightness, double contrast,
+                double saturation, int hue) {
+  if (im.empty() || im.channels() != 3) return -1;
+
+  std::random_device rand;
+  std::mt19937 gen(rand());
+
+  // Random distributions
+  std::uniform_real_distribution<double> dist_b(-brightness, brightness);
+  std::uniform_real_distribution<double> dist_c(1.0 - contrast, 1.0 + contrast);
+  std::uniform_real_distribution<double> dist_s(1.0 - saturation,
+                                                1.0 + saturation);
+  std::uniform_int_distribution<int> dist_h(-hue, hue);
+
+  // Apply brightness
+  double bshift = dist_b(gen);
+  im.convertTo(im, im.type(), 1.0, bshift);
+
+  // Apply contrast
+  double cscale = dist_c(gen);
+  im.convertTo(im, im.type(), cscale, 0);
+
+  // Convert to HSV for saturation and hue adjustment
+  cv::Mat hsv;
+  cv::cvtColor(im, hsv, cv::COLOR_BGR2HSV);
+  std::vector<cv::Mat> hsv_channels;
+  cv::split(hsv, hsv_channels);
+
+  // Saturation adjustment
+  double sscale = dist_s(gen);
+  hsv_channels[1].convertTo(hsv_channels[1], hsv_channels[1].type(), sscale);
+  cv::threshold(hsv_channels[1], hsv_channels[1], 255, 255, cv::THRESH_TRUNC);
+
+  // Hue adjustment
+  int hshift = dist_h(gen);
+  for (int y = 0; y < hsv_channels[0].rows; ++y) {
+    uchar *row = hsv_channels[0].ptr<uchar>(y);
+    for (int x = 0; x < hsv_channels[0].cols; ++x) {
+      row[x] = (row[x] + hshift + 180) % 180;
+    }
+  }
+
+  // Merge and convert back to BGR
+  cv::merge(hsv_channels, hsv);
+  cv::cvtColor(hsv, im, cv::COLOR_HSV2BGR);
+
+  return 0;
 }
 
 /** histogramEqualization **/
@@ -216,6 +267,16 @@ int whiteBalance(cv::Mat &im) {
   channels[1] *= gray / mean_g;
   channels[2] *= gray / mean_r;
   cv::merge(channels, im);
+  return 0;
+}
+
+/* toGrayscale */
+int toGrayscale(cv::Mat &im) {
+  if (im.empty() || im.channels() != 3) return -1;
+
+  cv::Mat gray;
+  cv::cvtColor(im, gray, cv::COLOR_BGR2GRAY);
+  im = gray;
   return 0;
 }
 
@@ -309,5 +370,30 @@ int sharpenImage(cv::Mat &im) {
   cv::Mat temp;
   cv::filter2D(im, temp, im.depth(), kernel);
   temp.copyTo(im);
+  return 0;
+}
+
+/** randomErase **/
+int randomErase(cv::Mat &im, int min_h, int max_h, int min_w, int max_w) {
+  if (im.empty() || min_h > max_h || min_w > max_w) return -1;
+
+  std::random_device rand;
+  std::mt19937 gen(rand());
+  std::uniform_int_distribution<int> h_dist(min_h, max_h);
+  std::uniform_int_distribution<int> w_dist(min_w, max_w);
+
+  int erase_h = h_dist(gen);
+  int erase_w = w_dist(gen);
+
+  if (erase_h > im.rows || erase_w > im.cols) return -1;
+
+  std::uniform_int_distribution<int> y_dist(0, im.rows - erase_h);
+  std::uniform_int_distribution<int> x_dist(0, im.cols - erase_w);
+
+  int x = x_dist(gen);
+  int y = y_dist(gen);
+
+  cv::Rect erase_rect(x, y, erase_w, erase_h);
+  im(erase_rect).setTo(cv::Scalar::all(0));
   return 0;
 }

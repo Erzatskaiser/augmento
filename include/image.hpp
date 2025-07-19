@@ -14,6 +14,8 @@
 #include <opencv2/core.hpp>
 #include <opencv2/imgcodecs.hpp>
 #include <string>
+#include <filesystem>
+#include <iostream>
 
 /**
  * @class Image
@@ -73,7 +75,7 @@ class Image {
    * @param ext File extension (default ".png").
    * @return 0 on success, -1 on failure.
    */
-  int save(const std::string& path, const std::string& ext = ".png") const;
+  int save(const std::string& path = "", const std::string& ext = ".png") const;
 
  private:
   cv::Mat data_;              ///< Raw image matrix.

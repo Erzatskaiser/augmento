@@ -7,9 +7,6 @@
 
 #include "../include/image.hpp"
 
-#include <filesystem>
-#include <iostream>
-
 namespace fs = std::filesystem;
 
 /* Initialize global ID counter */
@@ -57,10 +54,17 @@ int Image::save(const std::string& path, const std::string& ext) const {
     if (!fs::create_directories(fs::path(path))) return -1;
   }
 
+  // Saving in cwd if path is not set
+  fs::path cwd;
+  if (path.empty()) {
+    cwd = fs::current_path();
+  }
+
   // Determine filename
   std::string base = name_.empty() ? "image_" + std::to_string(id_)
                                    : fs::path(name_).stem().string();
-  fs::path outputPath = fs::path(path) / (base + ext);
+  fs::path outputPath =
+      path.empty() ? cwd / (base + ext) : fs::path(path) / (base + ext);
 
   // Write image to file
   if (!cv::imwrite(outputPath.string(), data_)) return -1;
