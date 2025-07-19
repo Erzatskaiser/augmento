@@ -80,10 +80,10 @@ class Image {
   void setName(const std::string& name);
 
   /**
-   * @beif Display image in resizable preview window.
+   * @brief Display image in resizable preview window.
    * @param window_name Optional name for display window.
    * @param wait_ms Duuration of wait in milliseconds (0 =  wait indefinitely).
-   * return 0 on success, -1 on failure.
+   * @return 0 on success, -1 on failure.
    */
   int preview(const std::string& window_name, int wait_ms = 0) const;
 
