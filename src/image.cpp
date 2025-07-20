@@ -45,6 +45,14 @@ const std::string& Image::getName() const { return name_; }
 /* Get globally unique image ID */
 const size_t Image::getId() const { return id_; }
 
+/* Return operation history */
+const std::vector<std::string>& getHistory() const { return history_; }
+
+/* Log new opeartion to history */
+int logOperation(const std::string& op) {
+  history_.emplace_back(op);
+}
+
 /* Preview image in resizable window */
 int Image::preview(cosnt std::string& window_name, int wait_ms) const {
   if (data_.empty()) return -1;
