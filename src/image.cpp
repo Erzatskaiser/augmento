@@ -46,15 +46,15 @@ const std::string& Image::getName() const { return name_; }
 const size_t Image::getId() const { return id_; }
 
 /* Return operation history */
-const std::vector<std::string>& getHistory() const { return history_; }
+const std::vector<std::string>& Image::getHistory() const { return history_; }
 
 /* Log new opeartion to history */
-int logOperation(const std::string& op) {
+int Image::logOperation(const std::string& op) {
   history_.emplace_back(op);
 }
 
 /* Preview image in resizable window */
-int Image::preview(cosnt std::string& window_name, int wait_ms) const {
+int Image::preview(const std::string& window_name, int wait_ms) const {
   if (data_.empty()) return -1;
 
   std::string win = window_name.empty() ? name_ : window_name;

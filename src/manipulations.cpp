@@ -111,7 +111,7 @@ cv::Mat resizeImage(const cv::Mat &im, int width, int height) {
 }
 
 /** resizeImage **/
-cv::Mat resizeImage(const cv::Mat &im, int scale) {
+cv::Mat resizeImage(const cv::Mat &im, double  scale) {
   if (im.empty()) return cv::Mat();
 
   cv::Mat res;

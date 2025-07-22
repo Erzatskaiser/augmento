@@ -77,7 +77,7 @@ cv::Mat resizeImage(const cv::Mat& im, int width, int height);
  * @param scale Scale factor.
  * @return Resized image with the specified scale.
  */
-cv::Mat resizeImage(const cv::Mat& im, int scale);
+cv::Mat resizeImage(const cv::Mat& im, double scale);
 
 /**
  * @brief Crop a fixed region from the input image.

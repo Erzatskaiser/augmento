@@ -11,6 +11,7 @@
 #pragma once
 
 #include <opencv2/core.hpp>
+#include <stdexcept>
 #include <random>
 #include <string>
 #include <memory>
