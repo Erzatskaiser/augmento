@@ -105,7 +105,6 @@ class CropImage : public Operation {
 
  private:
   int x_, y_, w_, h_;
-  bool is_random_;
 };
 
 /**
@@ -114,7 +113,7 @@ class CropImage : public Operation {
  */
 class AffineTransform : public Operation {
  public:
-  AffineTransform();
+  AffineTransform(std::mt19937& rng);
   AffineTransform(const cv::Mat& matrix);
   void apply(Image& img, std::mt19937& rng) const override;
   std::string name() const override;
