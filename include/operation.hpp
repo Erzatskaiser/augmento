@@ -4,17 +4,18 @@
  * @author Emmanuel Butsana
  * @date Initial release: July 18, 2025
  *
- * Defines the Operation interface and a registry of geometric, color, noise, and
- * filtering transformations for use in a data augmentation pipeline.
+ * Defines the Operation interface and a registry of geometric, color, noise,
+ * and filtering transformations for use in a data augmentation pipeline.
  */
 
 #pragma once
 
-#include <opencv2/core.hpp>
-#include <stdexcept>
-#include <random>
-#include <string>
 #include <memory>
+#include <opencv2/core.hpp>
+#include <random>
+#include <stdexcept>
+#include <string>
+
 #include "image.hpp"
 #include "manipulations.hpp"
 
@@ -44,14 +45,14 @@ class Operation {
 /// @brief Type alias for a shared pointer to an Operation.
 using OperationPtr = std::shared_ptr<Operation>;
 
-
 // ==========================================================
 // Geometric Operations
 // ==========================================================
 
 /**
  * @class RotateImage
- * @brief Applies a random rotation to an image (with optional cropping behavior).
+ * @brief Applies a random rotation to an image (with optional cropping
+ * behavior).
  */
 class RotateImage : public Operation {
  public:
@@ -98,7 +99,7 @@ class ResizeImage : public Operation {
  */
 class CropImage : public Operation {
  public:
-  CropImage(int width, int height);  ///< Random crop
+  CropImage(int width, int height);                ///< Random crop
   CropImage(int x, int y, int width, int height);  ///< Fixed crop
   void apply(Image& img, std::mt19937& rng) const override;
   std::string name() const override;
@@ -122,7 +123,6 @@ class AffineTransform : public Operation {
   cv::Mat matrix_;
 };
 
-
 // ==========================================================
 // Color & Intensity Operations
 // ==========================================================
@@ -133,7 +133,8 @@ class AffineTransform : public Operation {
  */
 class ColorJitter : public Operation {
  public:
-  ColorJitter(double brightness_range, double contrast_range, double saturation_range, int hue_range);
+  ColorJitter(double brightness_range, double contrast_range,
+              double saturation_range, int hue_range);
   void apply(Image& img, std::mt19937& rng) const override;
   std::string name() const override;
 
@@ -231,7 +232,6 @@ class AdjustHue : public Operation {
   int min_val_, max_val_;
 };
 
-
 // ==========================================================
 // Noise & Filtering
 // ==========================================================
@@ -242,7 +242,8 @@ class AdjustHue : public Operation {
  */
 class InjectNoise : public Operation {
  public:
-  InjectNoise(double mean_min, double mean_max, double stdev_min, double stdev_max);
+  InjectNoise(double mean_min, double mean_max, double stdev_min,
+              double stdev_max);
   void apply(Image& img, std::mt19937& rng) const override;
   std::string name() const override;
 
@@ -288,4 +289,3 @@ class RandomErase : public Operation {
  private:
   int min_h_, max_h_, min_w_, max_w_;
 };
-

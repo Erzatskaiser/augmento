@@ -42,9 +42,11 @@ class SafeQueue {
   }
 
   /**
-   * @brief Pop an item from the queue. Blocks until item is available or queue is closed.
+   * @brief Pop an item from the queue. Blocks until item is available or queue
+   * is closed.
    * @param item Reference to store the dequeued item.
-   * @return true if an item was dequeued, false if the queue is closed and empty.
+   * @return true if an item was dequeued, false if the queue is closed and
+   * empty.
    */
   bool pop(T& item) {
     std::unique_lock<std::mutex> lock(mtx_);
@@ -67,10 +69,10 @@ class SafeQueue {
   }
 
  private:
-  std::queue<T> queue_;              ///< Underlying STL queue
-  std::mutex mtx_;                   ///< Mutex for thread safety
-  std::condition_variable cv_;       ///< Condition variable for blocking pop
-  bool done_ = false;                ///< Flag to signal shutdown
+  std::queue<T> queue_;         ///< Underlying STL queue
+  std::mutex mtx_;              ///< Mutex for thread safety
+  std::condition_variable cv_;  ///< Condition variable for blocking pop
+  bool done_ = false;           ///< Flag to signal shutdown
 };
 
 /**
@@ -81,9 +83,7 @@ class SafeQueue {
  * @param thread_id Unique thread identifier (used for logging/debugging).
  */
 void producerThread(const std::vector<fs::path>& image_paths,
-                    SafeQueue<Image>& queue,
-                    Pipeline& pipeline,
-                    int thread_id);
+                    SafeQueue<Image>& queue, Pipeline& pipeline, int thread_id);
 
 /**
  * @brief Consumer thread function that saves processed images from the queue.
@@ -91,4 +91,3 @@ void producerThread(const std::vector<fs::path>& image_paths,
  * @param output_dir Output directory to save augmented images.
  */
 void consumerThread(SafeQueue<Image>& queue, const std::string& output_dir);
-

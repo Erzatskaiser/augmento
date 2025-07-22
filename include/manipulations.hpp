@@ -10,13 +10,13 @@
 
 #pragma once
 
+#include <cmath>
 #include <opencv2/core.hpp>
 #include <opencv2/imgcodecs.hpp>
 #include <opencv2/imgproc.hpp>
+#include <random>
 #include <stdexcept>
 #include <string>
-#include <random>
-#include <cmath>
 
 #define PI 3.14159
 
@@ -120,7 +120,8 @@ cv::Mat affineTransform(const cv::Mat& im, const cv::Mat& matrix);
  * @param hue Hue shift range in degrees (±range).
  * @return 0 on success, -1 on failure.
  */
-int colorJitter(cv::Mat& im, double brightness, double contrast, double saturation, int hue);
+int colorJitter(cv::Mat& im, double brightness, double contrast,
+                double saturation, int hue);
 
 /**
  * @brief Apply histogram equalization on image intensity.
@@ -213,4 +214,3 @@ int sharpenImage(cv::Mat& im);
  * @return 0 on success, -1 on failure.
  */
 int randomErase(cv::Mat& im, int min_h, int max_h, int min_w, int max_w);
-

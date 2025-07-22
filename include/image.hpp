@@ -11,11 +11,11 @@
 #pragma once
 
 #include <atomic>
+#include <filesystem>
 #include <opencv2/core.hpp>
 #include <opencv2/imgcodecs.hpp>
 #include <string>
 #include <vector>
-#include <filesystem>
 
 /**
  * @class Image
@@ -96,10 +96,10 @@ class Image {
   int save(const std::string& path = "", const std::string& ext = ".png") const;
 
  private:
-  cv::Mat data_;              ///< Raw image matrix.
-  std::string name_;          ///< Optional image name or identifier.
-  size_t id_;                 ///< Unique image ID.
-  std::vector<std::string> history_;     ///< Operation history log.
-  static std::atomic<size_t> global_id_; ///< Global counter for assigning unique IDs.
+  cv::Mat data_;                      ///< Raw image matrix.
+  std::string name_;                  ///< Optional image name or identifier.
+  size_t id_;                         ///< Unique image ID.
+  std::vector<std::string> history_;  ///< Operation history log.
+  static std::atomic<size_t>
+      global_id_;  ///< Global counter for assigning unique IDs.
 };
-

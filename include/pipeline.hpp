@@ -1,12 +1,14 @@
 /**
  * @file pipeline.hpp
- * @brief Defines the Pipeline class for managing probabilistic image transformations in augmento.
- *        Also declares helper functions for building configured pipelines from operation maps.
+ * @brief Defines the Pipeline class for managing probabilistic image
+ * transformations in augmento. Also declares helper functions for building
+ * configured pipelines from operation maps.
  * @author Emmanuel Butsana
  * @date Initial release: June 3, 2025
  *
- * The Pipeline class holds a sequence of augmentation operations with associated probabilities
- * and applies them consistently using a seeded random engine.
+ * The Pipeline class holds a sequence of augmentation operations with
+ * associated probabilities and applies them consistently using a seeded random
+ * engine.
  */
 
 #pragma once
@@ -22,14 +24,16 @@
  * @class Pipeline
  * @brief Manages a sequence of probabilistic image transformations.
  *
- * Each transformation is a callable that takes an Image and a seeded random generator.
- * Operations are applied with a given probability, allowing for randomized augmentation pipelines.
+ * Each transformation is a callable that takes an Image and a seeded random
+ * generator. Operations are applied with a given probability, allowing for
+ * randomized augmentation pipelines.
  */
 class Pipeline {
  public:
   /**
    * @brief Construct a pipeline with a given base seed.
-   * @param seed Seed for deterministic random behavior (default: random_device).
+   * @param seed Seed for deterministic random behavior (default:
+   * random_device).
    */
   explicit Pipeline(unsigned int seed = std::random_device{}());
 
@@ -38,7 +42,8 @@ class Pipeline {
    * @param op Function taking Image& and std::mt19937&.
    * @param prob Probability [0.0, 1.0] that this operation is applied.
    */
-  void addOperation(std::function<void(Image&, std::mt19937&)> op, double prob = 1.0);
+  void addOperation(std::function<void(Image&, std::mt19937&)> op,
+                    double prob = 1.0);
 
   /**
    * @brief Apply the pipeline to a given image using internal base seed.
@@ -59,16 +64,17 @@ class Pipeline {
     double prob;
   };
 
-  std::vector<Operation> operations_; ///< Stored transformation operations.
-  unsigned int base_seed_;            ///< Seed used for deterministic augmentation.
+  std::vector<Operation> operations_;  ///< Stored transformation operations.
+  unsigned int base_seed_;  ///< Seed used for deterministic augmentation.
 };
 
 /**
- * @brief Utility function to configure a pipeline from a map of operation names to probabilities.
- * @param probs Map from operation name (e.g. "rotate", "blur") to probability [0.0, 1.0].
+ * @brief Utility function to configure a pipeline from a map of operation names
+ * to probabilities.
+ * @param probs Map from operation name (e.g. "rotate", "blur") to probability
+ * [0.0, 1.0].
  * @param seed Optional base seed for deterministic behavior.
  * @return Configured Pipeline object.
  */
 Pipeline configurePipeline(const std::unordered_map<std::string, double>& probs,
                            unsigned int seed = std::random_device{}());
-
