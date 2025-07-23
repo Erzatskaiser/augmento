@@ -23,6 +23,18 @@
 #include "operation.hpp"
 
 /**
+ * @struct OperationEntry
+ * @brief Represents a single operation and its associated probability in the pipeline.
+ *
+ * This structure is used to store an instance of an image augmentation operation along with the probability that the operation
+ * should be applied during pipeline execution. It is typically used internally by the Pipeline class.
+ */
+struct OperationEntry {
+  std::shared_ptr<Operation> op;
+  double prob;
+};
+
+/**
  * @class Pipeline
  * @brief Manages a sequence of probabilistic image transformations.
  *
@@ -60,11 +72,6 @@ class Pipeline {
   void apply(Image& img, unsigned int seed);
 
  private:
-  struct OperationEntry {
-    std::shared_ptr<Operation> op;;
-    double prob;
-  };
-
   std::vector<OperationEntry> operations_;  ///< Stored transformation operations.
   unsigned int base_seed_;  ///< Seed used for deterministic augmentation.
 };
