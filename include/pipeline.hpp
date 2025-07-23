@@ -14,20 +14,25 @@
 #pragma once
 
 #include <functional>
+#include <memory>
 #include <random>
+#include <string>
+#include <tuple>
 #include <unordered_map>
 #include <vector>
-#include <memory>
 
 #include "image.hpp"
 #include "operation.hpp"
 
 /**
  * @struct OperationEntry
- * @brief Represents a single operation and its associated probability in the pipeline.
+ * @brief Represents a single operation and its associated probability in the
+ * pipeline.
  *
- * This structure is used to store an instance of an image augmentation operation along with the probability that the operation
- * should be applied during pipeline execution. It is typically used internally by the Pipeline class.
+ * This structure is used to store an instance of an image augmentation
+ * operation along with the probability that the operation should be applied
+ * during pipeline execution. It is typically used internally by the Pipeline
+ * class.
  */
 struct OperationEntry {
   std::shared_ptr<Operation> op;
@@ -53,10 +58,9 @@ class Pipeline {
 
   /**
    * @brief Add a transformation operation to the pipeline.
-   * @param op Shared pointer to an Operation instance.
-   * @param prob Probability [0.0, 1.0] that this operation is applied.
+   * @param op OperationEntry object represeting operation.
    */
-  void addOperation(std::shared_ptr<Operation> op,double prob = 1.0);
+  void addOperation(OperationEntry& op);
 
   /**
    * @brief Apply the pipeline to a given image using internal base seed.
@@ -72,17 +76,32 @@ class Pipeline {
   void apply(Image& img, unsigned int seed);
 
  private:
-  std::vector<OperationEntry> operations_;  ///< Stored transformation operations.
+  std::vector<OperationEntry>
+      operations_;          ///< Stored transformation operations.
   unsigned int base_seed_;  ///< Seed used for deterministic augmentation.
 };
 
+using ParamList = std::vector<double>;
+
 /**
- * @brief Utility function to configure a pipeline from a map of operation names
- * to probabilities.
- * @param probs Map from operation name (e.g. "rotate", "blur") to probability
- * [0.0, 1.0].
+ * @brief Constructs pipeline from a list of operations with explicit parameters
+ * @param config A vector of tuples where each tuple contains: operation
+ * name(std::string), a list of parameters (ParamList), probability of applying
+ * the operation
  * @param seed Optional base seed for deterministic behavior.
  * @return Configured Pipeline object.
  */
-Pipeline configurePipeline(const std::unordered_map<std::string, double>& probs,
-                           unsigned int seed = std::random_device{}());
+Pipeline configurePipeline(
+    const std::vector<std::tuple<std::string, ParamList, double>>& config,
+    unsigned int seed = std::random_device{}());
+
+/**
+ * @brief Constructs pipeline from a list of operations using default parameters
+ * @param config A vector of pairs, where each contains: operation name
+ * (std::string), probability of applying the operation
+ * @param seed Optional base seed for deterministic behavior.
+ * @return Configured Pipeline object.
+ */
+Pipeline configurePipeline(
+    const std::vector<std::pair<std::string, double>>& config,
+    unsigned int seed = std::random_device{}());

@@ -41,7 +41,8 @@ Pipeline configurePipeline(const std::unordered_map<std::string, double>& probs,
                            unsigned int seed) {
   Pipeline pipeline(seed);
 
-  auto add_if_present = [&](const std::string& key, std::shared_ptr<Operation> op){
+  auto add_if_present = [&](const std::string& key,
+                            std::shared_ptr<Operation> op) {
     auto it = probs.find(key);
     if (it != probs.end()) {
       pipeline.addOperation(std::move(op), it->second);
