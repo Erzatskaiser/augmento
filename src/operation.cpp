@@ -10,8 +10,6 @@
 
 #include "../include/operation.hpp"
 
-#include <sstream>  // For detailed error messages
-
 /** ---------------- RotateImage ---------------- **/
 RotateImage::RotateImage(double min_angle, double max_angle, size_t rot_type)
     : min_angle_(min_angle), max_angle_(max_angle), rot_type_(rot_type) {

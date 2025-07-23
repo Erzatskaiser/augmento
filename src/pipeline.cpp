@@ -8,12 +8,11 @@
 // TODO: Add new operations, addOperationWithName, verbosity, metadata of ops
 // applied
 
-#include "pipeline.hpp"
-
 #include <random>
 #include <unordered_map>
 
 #include "image.hpp"
+#include "pipeline.hpp"
 #include "manipulations.hpp"
 
 /* Constructor with optional base seed */

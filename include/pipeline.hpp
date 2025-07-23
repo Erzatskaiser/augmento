@@ -19,6 +19,7 @@
 #include <vector>
 
 #include "image.hpp"
+#include "operation.hpp"
 
 /**
  * @class Pipeline
@@ -39,11 +40,10 @@ class Pipeline {
 
   /**
    * @brief Add a transformation operation to the pipeline.
-   * @param op Function taking Image& and std::mt19937&.
+   * @param op Shared pointer to an Operation instance.
    * @param prob Probability [0.0, 1.0] that this operation is applied.
    */
-  void addOperation(std::function<void(Image&, std::mt19937&)> op,
-                    double prob = 1.0);
+  void addOperation(std::shared_ptr<Operation> op,double prob = 1.0);
 
   /**
    * @brief Apply the pipeline to a given image using internal base seed.
@@ -59,12 +59,12 @@ class Pipeline {
   void apply(Image& img, unsigned int seed);
 
  private:
-  struct Operation {
-    std::function<void(Image&, std::mt19937&)> func;
+  struct OperationEntry {
+    std::shared_ptr<Operation> op;;
     double prob;
   };
 
-  std::vector<Operation> operations_;  ///< Stored transformation operations.
+  std::vector<OperationEntry> operations_;  ///< Stored transformation operations.
   unsigned int base_seed_;  ///< Seed used for deterministic augmentation.
 };
 

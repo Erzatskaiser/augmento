@@ -49,7 +49,7 @@ const size_t Image::getId() const { return id_; }
 const std::vector<std::string>& Image::getHistory() const { return history_; }
 
 /* Log new opeartion to history */
-int Image::logOperation(const std::string& op) { history_.emplace_back(op); }
+void Image::logOperation(const std::string& op) { history_.emplace_back(op); }
 
 /* Preview image in resizable window */
 int Image::preview(const std::string& window_name, int wait_ms) const {

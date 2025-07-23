@@ -14,8 +14,10 @@
 #include <filesystem>
 #include <opencv2/core.hpp>
 #include <opencv2/imgcodecs.hpp>
+#include <opencv2/highgui.hpp>
 #include <string>
 #include <vector>
+#include <iostream>
 
 /**
  * @class Image
@@ -69,9 +71,8 @@ class Image {
   /**
    * @brief Logs operation applied to image.
    * @param op String detailing operation applied.
-   * @return 0 on sucess, -1 on failure.
    */
-  int logOperation(const std::string& op);
+  void logOperation(const std::string& op);
 
   /**
    * @brief Set image name or ID.
