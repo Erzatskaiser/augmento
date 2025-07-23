@@ -17,6 +17,7 @@
 #include <random>
 #include <unordered_map>
 #include <vector>
+#include <memory>
 
 #include "image.hpp"
 #include "operation.hpp"
