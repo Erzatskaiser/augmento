@@ -24,6 +24,6 @@ class OperationFactory {
  public:
   OperationFactory();
   static OperationEntry create(const std::string& name, const ParamList& params,
-                               double prob);
+                               double prob = 1.0);
   static OperationEntry create(const std::string& name, double prob = 1.0);
 };

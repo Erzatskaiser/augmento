@@ -54,7 +54,7 @@ OperationEntry OperationFactory::create(const std::string& name,
   else if (key == "affine transform") {
     if (params.empty()) {
       std::random_device rd;
-      sdt::mt19937 rng(rd());
+      std::mt19937 rng(rd());
       return OperationEntry{std::make_shared<AffineTransform>(rng), prob};
     } else if (params.size() == 6) {
       cv::Mat matrix = (cv::Mat_<double>(2, 3) << params[0], params[1],
@@ -81,49 +81,49 @@ OperationEntry OperationFactory::create(const std::string& name,
   }
 
   else if (key == "white balance") {
-    if (params.size != 0)
+    if (params.size() != 0)
       throw std::invalid_argument("white balance takes 0 arguments");
     return OperationEntry{std::make_shared<WhiteBalance>(), prob};
   }
 
   else if (key == "to grayscale") {
-    if (params.size != 0)
+    if (params.size() != 0)
       throw std::invalid_argument("to grayscale takes 0 arguments");
     return OperationEntry{std::make_shared<ToGrayscale>(), prob};
   }
 
   else if (key == "adjust brightness") {
-    if (params.size != 2)
+    if (params.size() != 2)
       throw std::invalid_argument("adjust brightness takes 2 arguments");
     return OperationEntry{
         std::make_shared<AdjustBrightness>(params[0], params[1]), prob};
   }
 
   else if (key == "adjust contrast") {
-    if (params.size != 2)
+    if (params.size() != 2)
       throw std::invalid_argument("adjust contrast takes 2 arguments");
     return OperationEntry{
         std::make_shared<AdjustContrast>(params[0], params[1]), prob};
   }
 
-  else if (key = "adjust saturation") {
-    if (params.size != 2)
+  else if (key == "adjust saturation") {
+    if (params.size() != 2)
       throw std::invalid_argument("adjust saturation takes 2 arguments");
     return OperationEntry{
         std::make_shared<AdjustSaturation>(params[0], params[1]), prob};
   }
 
   else if (key == "adjust hue") {
-    if (params.size != 2)
+    if (params.size() != 2)
       throw std::invalid_argument("adjust hue takes 2 arguments");
     return OperationEntry{std::make_shared<AdjustHue>(params[0], params[1]),
                           prob};
   }
 
   else if (key == "inject noise") {
-    if (params.size == 0)
+    if (params.size() == 0)
       return OperationEntry{std::make_shared<InjectNoise>(), prob};
-    if (params.size == 4)
+    if (params.size() == 4)
       return OperationEntry{std::make_shared<InjectNoise>(params[0], params[1],
                                                           params[2], params[3]),
                             prob};
@@ -132,9 +132,9 @@ OperationEntry OperationFactory::create(const std::string& name,
   }
 
   else if (key == "blur image") {
-    if (params.size == 0)
+    if (params.size() == 0)
       return OperationEntry{std::make_shared<BlurImage>(), prob};
-    if (params.size == 2)
+    if (params.size() == 2)
       return OperationEntry{std::make_shared<BlurImage>(params[0], params[1]),
                             prob};
     else
@@ -142,16 +142,16 @@ OperationEntry OperationFactory::create(const std::string& name,
   }
 
   else if (key == "sharpen image") {
-    if (params.size == 0)
+    if (params.size() == 0)
       return OperationEntry{std::make_shared<SharpenImage>(), prob};
     else
       throw std::invalid_argument("sharpen image take 0 arguments");
   }
 
   else if (key == "random erase") {
-    if (params.size == 0)
+    if (params.size() == 0)
       return OperationEntry{std::make_shared<RandomErase>(), prob};
-    else if (params.size == 4)
+    else if (params.size() == 4)
       return OperationEntry{std::make_shared<RandomErase>(params[0], params[1],
                                                           params[2], params[3]),
                             prob};
