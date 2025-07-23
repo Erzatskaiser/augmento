@@ -13,6 +13,7 @@
 #include <memory>
 #include <opencv2/core.hpp>
 #include <random>
+#include <sstream>
 #include <stdexcept>
 #include <string>
 

@@ -10,12 +10,17 @@
 
 #include "../include/operation.hpp"
 
+#include <sstream>  // For detailed error messages
+
 /** ---------------- RotateImage ---------------- **/
 RotateImage::RotateImage(double min_angle, double max_angle, size_t rot_type)
     : min_angle_(min_angle), max_angle_(max_angle), rot_type_(rot_type) {
-  if (min_angle_ > max_angle_)
-    throw std::invalid_argument(
-        "RotateImage: min angle cannot be greater than max angle");
+  if (min_angle_ > max_angle_) {
+    std::ostringstream oss;
+    oss << "RotateImage: min angle (" << min_angle_
+        << ") cannot be greater than max angle (" << max_angle_ << ")";
+    throw std::invalid_argument(oss.str());
+  }
 }
 
 void RotateImage::apply(Image& img, std::mt19937& rng) const {
@@ -32,7 +37,9 @@ void RotateImage::apply(Image& img, std::mt19937& rng) const {
     img.setData(rotateImage(img.getData(), angle));
     img.logOperation("RotateImage (fill-in): " + std::to_string(angle));
   } else {
-    throw std::invalid_argument("RotateImage: Invalid rotation type.");
+    std::ostringstream oss;
+    oss << "RotateImage: Invalid rotation type (" << rot_type_ << ")";
+    throw std::invalid_argument(oss.str());
   }
 }
 
@@ -48,15 +55,20 @@ void ReflectImage::apply(Image& img, std::mt19937& rng) const {
   int axis = axisDist(rng);
 
   if (axis == 0) {
-    if (reflectImageVertical(img.getData()) == -1)
-      throw std::runtime_error(
-          "ReflectImage: could not perform vertical flip on " + img.getName());
+    if (reflectImageVertical(img.getData()) == -1) {
+      std::ostringstream oss;
+      oss << "ReflectImage: could not perform vertical flip on image '"
+          << img.getName() << "'";
+      throw std::runtime_error(oss.str());
+    }
     img.logOperation("ReflectImage: Vertical");
   } else {
-    if (reflectImageHorizontal(img.getData()) == -1)
-      throw std::runtime_error(
-          "ReflectImage: could not perform horizontal flip on " +
-          img.getName());
+    if (reflectImageHorizontal(img.getData()) == -1) {
+      std::ostringstream oss;
+      oss << "ReflectImage: could not perform horizontal flip on image '"
+          << img.getName() << "'";
+      throw std::runtime_error(oss.str());
+    }
     img.logOperation("ReflectImage: Horizontal");
   }
 }
@@ -67,19 +79,39 @@ std::string ReflectImage::name() const {
 
 /** ---------------- ResizeImage ---------------- **/
 ResizeImage::ResizeImage(double min_scale, double max_scale)
-    : min_scale_(min_scale), max_scale_(max_scale),
-      min_w_(-1), max_w_(-1), min_h_(-1), max_h_(-1) {
-  if (min_scale_ > max_scale_)
-    throw std::invalid_argument(
-        "ResizeImage: min scale cannot be greater than max scale");
+    : min_scale_(min_scale),
+      max_scale_(max_scale),
+      min_w_(-1),
+      max_w_(-1),
+      min_h_(-1),
+      max_h_(-1) {
+  if (min_scale_ > max_scale_) {
+    std::ostringstream oss;
+    oss << "ResizeImage: min scale (" << min_scale_
+        << ") cannot be greater than max scale (" << max_scale_ << ")";
+    throw std::invalid_argument(oss.str());
+  }
 }
 
 ResizeImage::ResizeImage(int min_w, int max_w, int min_h, int max_h)
-    : min_w_(min_w), max_w_(max_w), min_h_(min_h), max_h_(max_h),
-      min_scale_(-1), max_scale_(-1) {
-  if (min_w_ > max_w_ || min_h_ > max_h_)
-    throw std::invalid_argument(
-        "ResizeImage: min dimension cannot be greater than max dimension");
+    : min_w_(min_w),
+      max_w_(max_w),
+      min_h_(min_h),
+      max_h_(max_h),
+      min_scale_(-1),
+      max_scale_(-1) {
+  if (min_w_ > max_w_) {
+    std::ostringstream oss;
+    oss << "ResizeImage: min width (" << min_w_
+        << ") cannot be greater than max width (" << max_w_ << ")";
+    throw std::invalid_argument(oss.str());
+  }
+  if (min_h_ > max_h_) {
+    std::ostringstream oss;
+    oss << "ResizeImage: min height (" << min_h_
+        << ") cannot be greater than max height (" << max_h_ << ")";
+    throw std::invalid_argument(oss.str());
+  }
 }
 
 void ResizeImage::apply(Image& img, std::mt19937& rng) const {
@@ -110,20 +142,29 @@ std::string ResizeImage::name() const {
 /** ---------------- CropImage ---------------- **/
 CropImage::CropImage(int width, int height)
     : w_(width), h_(height), x_(-1), y_(-1) {
-  if (width < 0 || height < 0)
-    throw std::invalid_argument("CropImage: cannot crop by negative dimensions");
+  if (width < 0 || height < 0) {
+    std::ostringstream oss;
+    oss << "CropImage: cannot crop by negative dimensions: width=" << width
+        << ", height=" << height;
+    throw std::invalid_argument(oss.str());
+  }
 }
 
 CropImage::CropImage(int x, int y, int width, int height)
     : x_(x), y_(y), w_(width), h_(height) {
-  if (width < 0 || height < 0 || x < 0 || y < 0)
-    throw std::invalid_argument("CropImage: all parameters must be positive");
+  if (width < 0 || height < 0 || x < 0 || y < 0) {
+    std::ostringstream oss;
+    oss << "CropImage: all parameters must be non-negative. Received x=" << x
+        << ", y=" << y << ", width=" << width << ", height=" << height;
+    throw std::invalid_argument(oss.str());
+  }
 }
 
 void CropImage::apply(Image& img, std::mt19937& rng) const {
   if (x_ == -1) {
     img.setData(randomCrop(img.getData(), w_, h_));
-    img.logOperation("CropImage (random): " + std::to_string(w_) + "x" + std::to_string(h_));
+    img.logOperation("CropImage (random): " + std::to_string(w_) + "x" +
+                     std::to_string(h_));
   } else {
     img.setData(cropImage(img.getData(), x_, y_, w_, h_));
     img.logOperation("CropImage (fixed): (" + std::to_string(x_) + "," +
@@ -141,16 +182,29 @@ AffineTransform::AffineTransform(std::mt19937& rng) {
   std::uniform_real_distribution<double> dist(-2, 2);
   cv::Mat matrix(2, 3, CV_64F);
   for (int i = 0; i < 2; ++i)
-    for (int j = 0; j < 3; ++j)
-      matrix.at<double>(i, j) = dist(rng);
+    for (int j = 0; j < 3; ++j) matrix.at<double>(i, j) = dist(rng);
   matrix_ = matrix.clone();
 }
 
 AffineTransform::AffineTransform(const cv::Mat& matrix) {
+  // Validate matrix size and type
+  if (matrix.rows != 2 || matrix.cols != 3) {
+    std::ostringstream oss;
+    oss << "AffineTransform: matrix must be of size 2x3, but received "
+        << matrix.rows << "x" << matrix.cols;
+    throw std::invalid_argument(oss.str());
+  }
+  if (matrix.type() != CV_64F) {
+    std::ostringstream oss;
+    oss << "AffineTransform: matrix must have type CV_64F (double precision), "
+           "but received type "
+        << matrix.type();
+    throw std::invalid_argument(oss.str());
+  }
   matrix_ = matrix.clone();
 }
 
-void AffineTransform::apply(Image& img, std::mt19937& rng) const {
+void AffineTransform::apply(Image& img, std::mt19937& /*rng*/) const {
   img.setData(affineTransform(img.getData(), matrix_));
   img.logOperation("AffineTransform");
 }
@@ -166,11 +220,19 @@ ColorJitter::ColorJitter(double brightness_range, double contrast_range,
       contrast_range_(contrast_range),
       saturation_range_(saturation_range),
       hue_range_(hue_range) {
-  if (brightness_range < 0 || contrast_range < 0 || saturation_range < 0 || hue_range < 0)
-    throw std::invalid_argument("ColorJitter: all arguments must be positive");
+  if (brightness_range < 0 || contrast_range < 0 || saturation_range < 0 ||
+      hue_range < 0) {
+    std::ostringstream oss;
+    oss << "ColorJitter: all arguments must be non-negative. "
+        << "Received brightness_range=" << brightness_range
+        << ", contrast_range=" << contrast_range
+        << ", saturation_range=" << saturation_range
+        << ", hue_range=" << hue_range;
+    throw std::invalid_argument(oss.str());
+  }
 }
 
-void ColorJitter::apply(Image& img, std::mt19937& rng) const {
+void ColorJitter::apply(Image& img, std::mt19937& /*rng*/) const {
   colorJitter(img.getData(), brightness_range_, contrast_range_,
               saturation_range_, hue_range_);
   img.logOperation("ColorJitter: " + std::to_string(brightness_range_) + " " +
@@ -186,7 +248,7 @@ std::string ColorJitter::name() const {
 /** ---------------- HistogramEqualization ---------------- **/
 HistogramEqualization::HistogramEqualization() = default;
 
-void HistogramEqualization::apply(Image& img, std::mt19937& rng) const {
+void HistogramEqualization::apply(Image& img, std::mt19937& /*rng*/) const {
   histogramEqualization(img.getData());
   img.logOperation("HistogramEqualization");
 }
@@ -198,7 +260,7 @@ std::string HistogramEqualization::name() const {
 /** ---------------- WhiteBalance ---------------- **/
 WhiteBalance::WhiteBalance() = default;
 
-void WhiteBalance::apply(Image& img, std::mt19937& rng) const {
+void WhiteBalance::apply(Image& img, std::mt19937& /*rng*/) const {
   whiteBalance(img.getData());
   img.logOperation("WhiteBalance");
 }
@@ -210,7 +272,7 @@ std::string WhiteBalance::name() const {
 /** ---------------- ToGrayscale ---------------- **/
 ToGrayscale::ToGrayscale() = default;
 
-void ToGrayscale::apply(Image& img, std::mt19937& rng) const {
+void ToGrayscale::apply(Image& img, std::mt19937& /*rng*/) const {
   toGrayscale(img.getData());
   img.logOperation("ToGrayscale");
 }
@@ -222,9 +284,12 @@ std::string ToGrayscale::name() const {
 /** ---------------- AdjustBrightness ---------------- **/
 AdjustBrightness::AdjustBrightness(double min_val, double max_val)
     : min_val_(min_val), max_val_(max_val) {
-  if (min_val_ > max_val_)
-    throw std::invalid_argument(
-        "AdjustBrightness: Minimum value cannot be greater than maximum value");
+  if (min_val_ > max_val_) {
+    std::ostringstream oss;
+    oss << "AdjustBrightness: Minimum value (" << min_val_
+        << ") cannot be greater than maximum value (" << max_val_ << ")";
+    throw std::invalid_argument(oss.str());
+  }
 }
 
 void AdjustBrightness::apply(Image& img, std::mt19937& rng) const {
@@ -241,9 +306,12 @@ std::string AdjustBrightness::name() const {
 /** ---------------- AdjustContrast ---------------- **/
 AdjustContrast::AdjustContrast(double min_val, double max_val)
     : min_val_(min_val), max_val_(max_val) {
-  if (min_val_ > max_val_)
-    throw std::invalid_argument(
-        "AdjustContrast: Minimum value cannot be greater than maximum value");
+  if (min_val_ > max_val_) {
+    std::ostringstream oss;
+    oss << "AdjustContrast: Minimum value (" << min_val_
+        << ") cannot be greater than maximum value (" << max_val_ << ")";
+    throw std::invalid_argument(oss.str());
+  }
 }
 
 void AdjustContrast::apply(Image& img, std::mt19937& rng) const {
@@ -260,9 +328,12 @@ std::string AdjustContrast::name() const {
 /** ---------------- AdjustSaturation ---------------- **/
 AdjustSaturation::AdjustSaturation(double min_val, double max_val)
     : min_val_(min_val), max_val_(max_val) {
-  if (min_val_ > max_val_)
-    throw std::invalid_argument(
-        "AdjustSaturation: Minimum value cannot be greater than maximum value");
+  if (min_val_ > max_val_) {
+    std::ostringstream oss;
+    oss << "AdjustSaturation: Minimum value (" << min_val_
+        << ") cannot be greater than maximum value (" << max_val_ << ")";
+    throw std::invalid_argument(oss.str());
+  }
 }
 
 void AdjustSaturation::apply(Image& img, std::mt19937& rng) const {
@@ -279,9 +350,12 @@ std::string AdjustSaturation::name() const {
 /** ---------------- AdjustHue ---------------- **/
 AdjustHue::AdjustHue(int min_val, int max_val)
     : min_val_(min_val), max_val_(max_val) {
-  if (min_val_ > max_val_)
-    throw std::invalid_argument(
-        "AdjustHue: Minimum value cannot be greater than maximum value");
+  if (min_val_ > max_val_) {
+    std::ostringstream oss;
+    oss << "AdjustHue: Minimum value (" << min_val_
+        << ") cannot be greater than maximum value (" << max_val_ << ")";
+    throw std::invalid_argument(oss.str());
+  }
 }
 
 void AdjustHue::apply(Image& img, std::mt19937& rng) const {
@@ -295,10 +369,12 @@ void AdjustHue::apply(Image& img, std::mt19937& rng) const {
 InjectNoise::InjectNoise()
     : mean_min_(-10.0), mean_max_(10.0), stdev_min_(0.0), stdev_max_(20.0) {}
 
-InjectNoise::InjectNoise(double mean_min, double mean_max,
-                         double stdev_min, double stdev_max)
-    : mean_min_(mean_min), mean_max_(mean_max),
-      stdev_min_(stdev_min), stdev_max_(stdev_max) {}
+InjectNoise::InjectNoise(double mean_min, double mean_max, double stdev_min,
+                         double stdev_max)
+    : mean_min_(mean_min),
+      mean_max_(mean_max),
+      stdev_min_(stdev_min),
+      stdev_max_(stdev_max) {}
 
 void InjectNoise::apply(Image& img, std::mt19937& rng) const {
   std::uniform_real_distribution<double> mDist(mean_min_, mean_max_);
@@ -333,7 +409,7 @@ std::string BlurImage::name() const {
 /** ---------------- SharpenImage ---------------- **/
 SharpenImage::SharpenImage() = default;
 
-void SharpenImage::apply(Image& img, std::mt19937& rng) const {
+void SharpenImage::apply(Image& img, std::mt19937& /*rng*/) const {
   sharpenImage(img.getData());
   img.logOperation("SharpenImage");
 }
@@ -343,24 +419,38 @@ std::string SharpenImage::name() const {
 }
 
 /** ---------------- RandomErase ---------------- **/
-RandomErase::RandomErase()
-    : min_h_(1), max_h_(10), min_w_(1), max_w_(10) {}
+RandomErase::RandomErase() : min_h_(1), max_h_(10), min_w_(1), max_w_(10) {}
 
 RandomErase::RandomErase(int min_h, int max_h, int min_w, int max_w)
     : min_h_(min_h), max_h_(max_h), min_w_(min_w), max_w_(max_w) {
-  if (min_h_ > max_h_ || min_w_ > max_w_)
-    throw std::invalid_argument("RandomErase: minimums cannot exceed maximums");
-  if (max_w_ < 0 || max_h_ < 0)
-    throw std::invalid_argument("RandomErase: parameters cannot be negative");
+  if (min_h_ > max_h_) {
+    std::ostringstream oss;
+    oss << "RandomErase: min height (" << min_h_
+        << ") cannot be greater than max height (" << max_h_ << ")";
+    throw std::invalid_argument(oss.str());
+  }
+  if (min_w_ > max_w_) {
+    std::ostringstream oss;
+    oss << "RandomErase: min width (" << min_w_
+        << ") cannot be greater than max width (" << max_w_ << ")";
+    throw std::invalid_argument(oss.str());
+  }
+  if (max_w_ < 0 || max_h_ < 0) {
+    std::ostringstream oss;
+    oss << "RandomErase: width and height parameters cannot be negative. "
+           "Received max_w="
+        << max_w_ << ", max_h=" << max_h_;
+    throw std::invalid_argument(oss.str());
+  }
 }
 
-void RandomErase::apply(Image& img, std::mt19937& rng) const {
+void RandomErase::apply(Image& img, std::mt19937& /*rng*/) const {
   randomErase(img.getData(), min_h_, max_h_, min_w_, max_w_);
-  img.logOperation("RandomErase: h=" + std::to_string(min_h_) + "-" + std::to_string(max_h_) +
-                   ", w=" + std::to_string(min_w_) + "-" + std::to_string(max_w_));
+  img.logOperation("RandomErase: h=[" + std::to_string(min_h_) + "," +
+                   std::to_string(max_h_) + "], w=[" + std::to_string(min_w_) +
+                   "," + std::to_string(max_w_) + "]");
 }
 
 std::string RandomErase::name() const {
-  return "RandomErase: Randomly erases rectangular region in image";
+  return "RandomErase: Randomly erases rectangular region within image";
 }
-
