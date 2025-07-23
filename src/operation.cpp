@@ -275,3 +275,37 @@ void AdjustContrast::apply(Image& img, std::mt19937& rng) const {
 std::string AdjustContrast::name() const {
   return "AdjustContrast: Randomly adjust image contrast";
 }
+
+/** Constructor for AdjustSaturation **/
+AdjustSaturation::AdjustSaturation(double min_val, double max_val) : min_val_(min_val), max_val_(max_val) {
+  if (min_val_ > max_val_) throw std::invalid_argument("AdjustSaturation: Minimum value cannot be greater than maximum value");
+}
+
+/** AdjustSaturation apply function **/
+void AdjustSaturation::apply(Image& img, std::mt19937& rng) const {
+  std::uniform_real_distribution<double> sDist(min_val_, max_val_);
+  double saturation = sDist(rng);
+
+  adjustSaturation(img.getData(), saturation);
+}
+
+/** AdjustSaturation name function **/
+std::string AdjustSaturation::name() const {
+  return "AdjustSaturation: Randomly adjust image saturation";
+}
+
+/** Constructor for AdjustHue **/
+AdjustHue::AdjustHue(int min_val, int  max_val) : min_val_(min_val), max_val_(max_val) {
+  if (min_val_ > max_val_) throw std::invalid_argument("AdjustHue: Minimum value cannot be greater than maxium value");
+}
+
+/** AdjustHue apply function **/
+void AdjustHue::apply(Image& img, std::mt19937& rng) const {
+  std::uniform_int_distribution<int> hDist(min_val_, max_val_);
+  int hue = hDist(rng);
+
+  adjustHue(img.getData(), hue);
+}
+
+
+

@@ -242,6 +242,7 @@ class AdjustHue : public Operation {
  */
 class InjectNoise : public Operation {
  public:
+  InjectNoise();
   InjectNoise(double mean_min, double mean_max, double stdev_min,
               double stdev_max);
   void apply(Image& img, std::mt19937& rng) const override;
@@ -257,6 +258,7 @@ class InjectNoise : public Operation {
  */
 class BlurImage : public Operation {
  public:
+  BlurImage();
   BlurImage(int min_k, int max_k);
   void apply(Image& img, std::mt19937& rng) const override;
   std::string name() const override;
@@ -282,6 +284,7 @@ class SharpenImage : public Operation {
  */
 class RandomErase : public Operation {
  public:
+  RandomErase();
   RandomErase(int min_h, int max_h, int min_w, int max_w);
   void apply(Image& img, std::mt19937& rng) const override;
   std::string name() const override;
