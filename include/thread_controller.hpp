@@ -9,7 +9,7 @@
  * Handles task distribution, queueing, and lifecycle management.
  */
 
-#include <atom>
+#include <atomic>
 #include <iostream>
 #include <filesystem>
 #include <stdexcept>
@@ -50,8 +50,8 @@ class ThreadController {
    * @param output_dir Directory to save augmented images.
    * @param iterations Number of augmentations to perform per image.
    */
-  void run(const std::vector<fs::path>& image_paths, Pipeline& pipeline,
-           const std::string& output_dir, int iterations, bool verbose = false);
+  void run(const std::vector<fs::path>& image_paths, int iterations, Pipeline& pipeline,
+           const std::string& output_dir, bool verbose = false);
 
  private:
   /**
