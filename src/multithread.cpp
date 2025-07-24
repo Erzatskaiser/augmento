@@ -1,55 +1,51 @@
-// Emmanuel Butsana, 04 June 2025, multithread.cpp
-// Implements producer and consumer functions for the process
+/**
+ * @file multithread.cpp
+ * @brief Implements multithreaded producer-consumer image augmentation using a task-pool model.
+ * @author Emmanuel Butsana
+ * @date Refactored: July 23, 2025
+ *
+ * This file defines the core logic for parallel image augmentation using producer
+ * threads that apply transformations from a shared Pipeline and a consumer thread
+ * that writes processed images to disk. Work is distributed using thread-safe
+ * queues (SafeQueue<T>), and supports both single-image and paired-image augmentation.
+ */
 
 #include "multithread.hpp"
 
-/* Producer thread function, individual image */
-void producerThread(const std::vector<fs::path>& files, SafeQueue<Image>& queue,
-                    Pipeline& pipeline, int iter) {
-  for (const auto& path : files) {
-    for (int i = 0; i < iter; ++i) {
-      Image img(path);
-      pipeline.apply(img);
-      queue.push(std::move(img));
+std::atomic<size_t> g_processedCount = 0;
+
+/** Producer pool **/
+void producerPool(SafeQueue<fs::path>& pathQueue,
+                  SafeQueue<Image>& outputQueue,
+                  Pipeline& pipeline, int iterations) {
+  fs::path path;
+  while (pathQueue.pop(path)) {
+    for (int i = 0; i < iterations; ++i) {
+      try {
+        Image img(path);
+        pipeline.apply(img);
+        outputQueue.push(std::move(img));
+      } catch (const std::exception& e) {
+        std::cerr << "[WARN] Failed to process " << path << ": " << e.what() << "\n";
+      }
     }
   }
 }
 
-/* Producer thread function, paired augmentation */
-void pairedProducerThread(
-    const std::vector<std::pair<fs::path, fs::path>>& pairs,
-    SafeQueue<Image>& queue, Pipeline& pipeline, int iter) {
-  // Apply the same augmentation to images in pairs
-  for (const auto& [front, side] : pairs) {
-    if (front.empty() || side.empty()) continue;
-    std::string id =
-        front.stem().string().substr(0, front.stem().string().find("_"));
-
-    // Create as many augmentations as are required
-    for (int i = 0; i < iter; ++i) {
-      // Load images, set image seed
-      unsigned int shared_seed = static_cast<unsigned int>(
-          std::hash<std::string>{}(id + std::to_string(i)));
-      Image img1(front);
-      Image img2(side);
-
-      // Apply pipeline, set image name
-      pipeline.apply(img1, shared_seed);
-      pipeline.apply(img2, shared_seed);
-      img1.setName(id + "_aug" + std::to_string(i) + "_FRONT");
-      img2.setName(id + "_aug" + std::to_string(i) + "_SIDE");
-
-      // Push to queue
-      queue.push(std::move(img1));
-      queue.push(std::move(img2));
-    }
-  }
-}
-
-/* Consumer thread function */
+/** Consumer pool */
 void consumerThread(SafeQueue<Image>& queue, const std::string& outputDir) {
   Image img;
   while (queue.pop(img)) {
-    img.save(outputDir);
+    try {
+      img.save(outputDir);
+      ++g_processedCount;
+
+      if (g_processedCount % 100 == 0) {
+        std::cout << "[INFO] Saved " << g_processedCount << " images...\n";
+      }
+    } catch (const std::exception& e) {
+      std::cerr << "[ERROR] Failed to save image: " << e.what() << "\n";
+    }
   }
 }
+

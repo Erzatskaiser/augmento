@@ -2,19 +2,22 @@
  * @file multithread.hpp
  * @brief Thread-safe queue and multithreading utilities for augmento.
  * @author Emmanuel Butsana
- * @date Initial release: June 4, 2025
+ * @date Refactored: July 23, 2025
  *
- * Provides a SafeQueue<T> class and producer/consumer thread entry points
- * for parallel image augmentation using a thread-safe work queue.
+ * Provides SafeQueue<T> for communication, and thread entry points for
+ * producer-consumer parallelism using a shared task-pool model.
  */
 
 #pragma once
 
+#include <atomic>
 #include <condition_variable>
 #include <filesystem>
 #include <mutex>
 #include <queue>
+#include <utility>
 #include <vector>
+#include <iostream>
 
 #include "image.hpp"
 #include "pipeline.hpp"
@@ -22,72 +25,62 @@
 namespace fs = std::filesystem;
 
 /**
- * @brief Thread-safe queue for producer-consumer workflows.
+ * @brief Thread-safe bounded queue for producer-consumer workflows.
  * @tparam T Type of elements stored in the queue.
- *
- * Supports safe concurrent push and blocking pop. Use setDone() to
- * signal shutdown and unblock consumers.
  */
 template <typename T>
 class SafeQueue {
  public:
-  /**
-   * @brief Push an item into the queue.
-   * @param item Item to enqueue.
-   */
+  explicit SafeQueue(size_t max_size = 128) : max_size_(max_size) {}
+
   void push(T item) {
-    std::lock_guard<std::mutex> lock(mtx_);
+    std::unique_lock<std::mutex> lock(mtx_);
+    cv_not_full_.wait(lock, [&]() { return queue_.size() < max_size_ || done_; });
+    if (done_) return;
     queue_.push(std::move(item));
-    cv_.notify_one();
+    cv_not_empty_.notify_one();
   }
 
-  /**
-   * @brief Pop an item from the queue. Blocks until item is available or queue
-   * is closed.
-   * @param item Reference to store the dequeued item.
-   * @return true if an item was dequeued, false if the queue is closed and
-   * empty.
-   */
   bool pop(T& item) {
     std::unique_lock<std::mutex> lock(mtx_);
-    cv_.wait(lock, [&]() { return !queue_.empty() || done_; });
+    cv_not_empty_.wait(lock, [&]() { return !queue_.empty() || done_; });
     if (!queue_.empty()) {
       item = std::move(queue_.front());
       queue_.pop();
+      cv_not_full_.notify_one();
       return true;
     }
     return false;
   }
 
-  /**
-   * @brief Signal that no more items will be pushed.
-   */
   void setDone() {
     std::lock_guard<std::mutex> lock(mtx_);
     done_ = true;
-    cv_.notify_all();
+    cv_not_empty_.notify_all();
+    cv_not_full_.notify_all();
   }
 
  private:
-  std::queue<T> queue_;         ///< Underlying STL queue
-  std::mutex mtx_;              ///< Mutex for thread safety
-  std::condition_variable cv_;  ///< Condition variable for blocking pop
-  bool done_ = false;           ///< Flag to signal shutdown
+  std::queue<T> queue_;
+  std::mutex mtx_;
+  std::condition_variable cv_not_empty_;
+  std::condition_variable cv_not_full_;
+  size_t max_size_;
+  bool done_ = false;
 };
 
-/**
- * @brief Producer thread function that loads and pushes images to the queue.
- * @param image_paths List of image file paths to process.
- * @param queue Shared thread-safe queue to receive processed images.
- * @param pipeline Augmentation pipeline to apply to each image.
- * @param thread_id Unique thread identifier (used for logging/debugging).
- */
-void producerThread(const std::vector<fs::path>& image_paths,
-                    SafeQueue<Image>& queue, Pipeline& pipeline, int thread_id);
+// Global progress tracker
+extern std::atomic<size_t> g_processedCount;
 
 /**
- * @brief Consumer thread function that saves processed images from the queue.
- * @param queue Shared thread-safe queue to consume images from.
- * @param output_dir Output directory to save augmented images.
+ * @brief Generic image producer using a shared path queue (task-pool model).
+ */
+void producerPool(SafeQueue<fs::path>& pathQueue,
+                  SafeQueue<Image>& outputQueue,
+                  Pipeline& pipeline, int iterations);
+
+/**
+ * @brief Consumer thread that saves augmented images and updates progress.
  */
 void consumerThread(SafeQueue<Image>& queue, const std::string& output_dir);
+

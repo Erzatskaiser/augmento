@@ -5,51 +5,48 @@
  * @date Initial release: June 3, 2025
  */
 
-// TODO: Add new operations, addOperationWithName, verbosity, metadata of ops
-// applied
-
 #include "pipeline.hpp"
 
 /* Constructor with optional base seed */
 Pipeline::Pipeline(unsigned int seed) : base_seed_(seed) {}
 
-/* Add an operation to the pipeline with an associated execution probability */
-void Pipeline::addOperation(std::shared_ptr<Operation> op, double prob) {
-  operations_.push_back(OperationEntry{op, prob});
+/* add an operation to the pipeline using an OperationEntry object */
+void Pipeline::addOperation(OperationEntry op) {
+  operations_.push_back(op);
 }
 
 /* Apply the pipeline to an image using internal seeding based on image ID */
 void Pipeline::apply(Image& img) {
-  thread_local std::mt19937 rand;
-  rand.seed(base_seed_ + static_cast<unsigned int>(img.getId()));
+  thread_local std::mt19937 rand(base_seed_ + static_cast<unsigned int>(img.getId()));
   std::uniform_real_distribution<double> dist(0.0, 1.0);
 
-  // TODO: Iterate over operations, applying operation
+  // Iterate over operations, applying operation
+  for (const OperationEntry& op : operations_){
+    double probs = dist(rand);
+    if (probs <= op.prob) op->apply(img);
+  }
 }
 
 /* Apply the pipeline to an image using an externally provided seed */
 void Pipeline::apply(Image& img, unsigned int seed) {
-  thread_local std::mt19937 rand;
-  rand.seed(seed);
+  thread_local std::mt19937 rand(seed);
   std::uniform_real_distribution<double> dist(0.0, 1.0);
 
-  // TODO: Iterate over operations, applying operation
+  // Iterate over operations, applying operation
+  for (const OperationEntry& op : operations_){
+    double probs = dist(rand);
+    if (probs <= op.prob) op->apply(img);
+  }
 }
 
 /* Configure a pipeline from a map of probabilities */
-Pipeline configurePipeline(const std::unordered_map<std::string, double>& probs,
-                           unsigned int seed) {
+Pipeline configurePipeline(const std::vector<std::tuple<std::string, ParamList, double>>& config, unsigned int seed = std::random_device{}()) {
   Pipeline pipeline(seed);
 
-  auto add_if_present = [&](const std::string& key,
-                            std::shared_ptr<Operation> op) {
-    auto it = probs.find(key);
-    if (it != probs.end()) {
-      pipeline.addOperation(std::move(op), it->second);
-    }
-  };
-
-  add_if_present("rotate", std::make_shared<RotateImage>(
+  for (auto& configLine : config) {
+    OperationEntry op = OperationFactory::create(std::get<0>(configLine), std::get<1>(configLine), std::get<2>(configLine));
+    pipeline.addOperation(op);
+  }
   
   return pipeline;
 }
