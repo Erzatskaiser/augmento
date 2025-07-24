@@ -18,7 +18,7 @@ ThreadController::ThreadController(size_t numThreads, size_t queueCapacity)
 /** ThreadController run function **/
 void ThreadController::run(const std::vector<fs::path>& image_paths,
                            int iterations, Pipeline& pipeline,
-                           std::string output_dir, bool verbose) {
+                           const std::string& output_dir, bool verbose) {
   if (image_paths.empty()) {
     if (verbose) std::cout << "[WARNING] No image paths provided." << std::endl;
     return;
@@ -37,18 +37,18 @@ void ThreadController::run(const std::vector<fs::path>& image_paths,
   }
 
   for (const auto& path : image_paths) {
-    for (int i = 0; i < iteraitons; ++i) pathQueue_.push(path);
+    for (int i = 0; i < iterations; ++i) pathQueue_.push(path);
   }
 
   launchProducers(pipeline);
   launchConsumer(output_dir);
   waitForCompletion();
 
-  if (verbose) std::cout << "[INFO] Augmentation complete. << std::endl;
+  if (verbose) std::cout << "[INFO] Augmentation complete." << std::endl;
 }
 
 /** ThreadController launch producers function **/
-void ThreadController::launchProducers(pipeline) {
+void ThreadController::launchProducers(Pipeline& pipeline) {
   for (size_t i = 0; i < numThreads_; ++i) {
     producers_.emplace_back([&, i] {
       producerPool(pathQueue_, imageQueue_, pipeline, processedCount_);
@@ -59,11 +59,11 @@ void ThreadController::launchProducers(pipeline) {
 /** ThreadController launch consumer function **/
 void ThreadController::launchConsumer(const std::string& output_dir) {
   consumer_ =
-      std::thread([&, output_dir] { consumerThread(imageQueue_, output_dir); });
+      std::thread([&, output_dir] { consumerThread(imageQueue_, output_dir, processedCount_); });
 }
 
 /** ThreadController wait for completion function **/
-void AugmentationController::waitForCompletion() {
+void ThreadController::waitForCompletion() {
   for (auto& t : producers_) {
     if (t.joinable()) t.join();
   }

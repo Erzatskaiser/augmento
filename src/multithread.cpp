@@ -12,7 +12,7 @@
  * paired-image augmentation.
  */
 
-#include "multithread.hpp"
+#include "../include/multithread.hpp"
 
 /** Producer pool **/
 void producerPool(SafeQueue<fs::path>& pathQueue, SafeQueue<Image>& outputQueue,
@@ -33,14 +33,15 @@ void producerPool(SafeQueue<fs::path>& pathQueue, SafeQueue<Image>& outputQueue,
 
 /** Consumer pool */
 void consumerThread(SafeQueue<Image>& queue, const std::string& outputDir,
-                    std::atmonic<size_t>& processedCount) {
+                    std::atomic<size_t>& processedCount) {
+
   Image img;
   while (queue.pop(img)) {
     try {
       img.save(outputDir);
 
-      if (g_processedCount % 100 == 0) {
-        std::cout << "[INFO] Saved " << g_processedCount << " images...\n";
+      if (processedCount % 20 == 0) {
+        std::cout << "[INFO] Saved " << processedCount << " images...\n";
       }
     } catch (const std::exception& e) {
       std::cerr << "[ERROR] Failed to save image: " << e.what() << "\n";
