@@ -5,13 +5,13 @@
  * @date Initial release: June 3, 2025
  */
 
-#include "pipeline.hpp"
+#include "../include/pipeline.hpp"
 
 /* Constructor with optional base seed */
 Pipeline::Pipeline(unsigned int seed) : base_seed_(seed) {}
 
 /* add an operation to the pipeline using an OperationEntry object */
-void Pipeline::addOperation(OperationEntry op) {
+void Pipeline::addOperation(const OperationEntry& op) {
   operations_.push_back(op);
 }
 
@@ -23,7 +23,7 @@ void Pipeline::apply(Image& img) {
   // Iterate over operations, applying operation
   for (const OperationEntry& op : operations_){
     double probs = dist(rand);
-    if (probs <= op.prob) op->apply(img);
+    if (probs <= op.prob) op.op->apply(img, rand);
   }
 }
 
@@ -35,12 +35,12 @@ void Pipeline::apply(Image& img, unsigned int seed) {
   // Iterate over operations, applying operation
   for (const OperationEntry& op : operations_){
     double probs = dist(rand);
-    if (probs <= op.prob) op->apply(img);
+    if (probs <= op.prob) op.op->apply(img, rand);
   }
 }
 
 /* Configure a pipeline from a map of probabilities */
-Pipeline configurePipeline(const std::vector<std::tuple<std::string, ParamList, double>>& config, unsigned int seed = std::random_device{}()) {
+Pipeline configurePipeline(const std::vector<std::tuple<std::string, ParamList, double>>& config, unsigned int seed) {
   Pipeline pipeline(seed);
 
   for (auto& configLine : config) {
