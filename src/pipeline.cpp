@@ -17,11 +17,12 @@ void Pipeline::addOperation(const OperationEntry& op) {
 
 /* Apply the pipeline to an image using internal seeding based on image ID */
 void Pipeline::apply(Image& img) {
-  thread_local std::mt19937 rand(base_seed_ + static_cast<unsigned int>(img.getId()));
+  thread_local std::mt19937 rand(base_seed_ +
+                                 static_cast<unsigned int>(img.getId()));
   std::uniform_real_distribution<double> dist(0.0, 1.0);
 
   // Iterate over operations, applying operation
-  for (const OperationEntry& op : operations_){
+  for (const OperationEntry& op : operations_) {
     double probs = dist(rand);
     if (probs <= op.prob) op.op->apply(img, rand);
   }
@@ -33,20 +34,24 @@ void Pipeline::apply(Image& img, unsigned int seed) {
   std::uniform_real_distribution<double> dist(0.0, 1.0);
 
   // Iterate over operations, applying operation
-  for (const OperationEntry& op : operations_){
+  for (const OperationEntry& op : operations_) {
     double probs = dist(rand);
     if (probs <= op.prob) op.op->apply(img, rand);
   }
 }
 
 /* Configure a pipeline from a map of probabilities */
-Pipeline configurePipeline(const std::vector<std::tuple<std::string, ParamList, double>>& config, unsigned int seed) {
+Pipeline configurePipeline(
+    const std::vector<std::tuple<std::string, ParamList, double>>& config,
+    unsigned int seed) {
   Pipeline pipeline(seed);
 
   for (auto& configLine : config) {
-    OperationEntry op = OperationFactory::create(std::get<0>(configLine), std::get<1>(configLine), std::get<2>(configLine));
+    OperationEntry op = OperationFactory::create(std::get<0>(configLine),
+                                                 std::get<1>(configLine),
+                                                 std::get<2>(configLine));
     pipeline.addOperation(op);
   }
-  
+
   return pipeline;
 }

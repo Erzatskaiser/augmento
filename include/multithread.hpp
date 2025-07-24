@@ -13,11 +13,11 @@
 #include <atomic>
 #include <condition_variable>
 #include <filesystem>
+#include <iostream>
 #include <mutex>
 #include <queue>
 #include <utility>
 #include <vector>
-#include <iostream>
 
 #include "image.hpp"
 #include "pipeline.hpp"
@@ -35,7 +35,8 @@ class SafeQueue {
 
   void push(T item) {
     std::unique_lock<std::mutex> lock(mtx_);
-    cv_not_full_.wait(lock, [&]() { return queue_.size() < max_size_ || done_; });
+    cv_not_full_.wait(lock,
+                      [&]() { return queue_.size() < max_size_ || done_; });
     if (done_) return;
     queue_.push(std::move(item));
     cv_not_empty_.notify_one();
@@ -75,12 +76,10 @@ extern std::atomic<size_t> g_processedCount;
 /**
  * @brief Generic image producer using a shared path queue (task-pool model).
  */
-void producerPool(SafeQueue<fs::path>& pathQueue,
-                  SafeQueue<Image>& outputQueue,
+void producerPool(SafeQueue<fs::path>& pathQueue, SafeQueue<Image>& outputQueue,
                   Pipeline& pipeline, int iterations);
 
 /**
  * @brief Consumer thread that saves augmented images and updates progress.
  */
 void consumerThread(SafeQueue<Image>& queue, const std::string& output_dir);
-

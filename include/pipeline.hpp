@@ -21,8 +21,8 @@
 #include <unordered_map>
 #include <vector>
 
-#include "image.hpp"
 #include "factory.hpp"
+#include "image.hpp"
 #include "operation.hpp"
 
 /**

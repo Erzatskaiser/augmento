@@ -17,7 +17,6 @@
 
 #include "operation.hpp"
 
-
 /**
  * @struct OperationEntry
  * @brief Represents a single operation and its associated probability in the
@@ -48,22 +47,26 @@ class OperationFactory {
   OperationFactory() = delete;
 
   /**
-  * @brief Creates an operation entry from a given name, parameters, and probability.
-  * @param name Name of the operation (case-insensitive).
-  * @param params List of numeric parameters specific to the operation.
-  * @param prob Probability of applying the operation (default: 1.0).
-  * @return An OperationEntry object containing the operation and its probability.
-  * @throws std::invalid_argument if the parameters are invalid or unsupported.
-  */
+   * @brief Creates an operation entry from a given name, parameters, and
+   * probability.
+   * @param name Name of the operation (case-insensitive).
+   * @param params List of numeric parameters specific to the operation.
+   * @param prob Probability of applying the operation (default: 1.0).
+   * @return An OperationEntry object containing the operation and its
+   * probability.
+   * @throws std::invalid_argument if the parameters are invalid or unsupported.
+   */
   static OperationEntry create(const std::string& name, const ParamList& params,
                                double prob = 1.0);
 
   /**
-  * @brief Creates an operation entry from a given name using random/default parameters.
-  * @param name Name of the operation (case-insensitive).
-  * @param prob Probability of applying the operation (default: 1.0).
-  * @return An OperationEntry object with randomly selected parameters.
-  * @throws std::invalid_argument if the operation is unsupported or requires parameters.
-  */
+   * @brief Creates an operation entry from a given name using random/default
+   * parameters.
+   * @param name Name of the operation (case-insensitive).
+   * @param prob Probability of applying the operation (default: 1.0).
+   * @return An OperationEntry object with randomly selected parameters.
+   * @throws std::invalid_argument if the operation is unsupported or requires
+   * parameters.
+   */
   static OperationEntry create(const std::string& name, double prob = 1.0);
 };
