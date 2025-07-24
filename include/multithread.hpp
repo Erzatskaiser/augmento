@@ -70,16 +70,13 @@ class SafeQueue {
   bool done_ = false;
 };
 
-// Global progress tracker
-extern std::atomic<size_t> g_processedCount;
-
 /**
  * @brief Generic image producer using a shared path queue (task-pool model).
  */
 void producerPool(SafeQueue<fs::path>& pathQueue, SafeQueue<Image>& outputQueue,
-                  Pipeline& pipeline, int iterations);
+                  Pipeline& pipeline, std::atomic<size_t>& processedCount);
 
 /**
  * @brief Consumer thread that saves augmented images and updates progress.
  */
-void consumerThread(SafeQueue<Image>& queue, const std::string& output_dir);
+void consumerThread(SafeQueue<Image>& queue, const std::string& output_dir, std::atomic<size_t>& processedCount);

@@ -46,3 +46,29 @@ void ThreadController::run(const std::vector<fs::path>& image_paths,
 
   if (verbose) std::cout << "[INFO] Augmentation complete. << std::endl;
 }
+
+/** ThreadController launch producers function **/
+void ThreadController::launchProducers(pipeline) {
+  for (size_t i = 0; i < numThreads_; ++i) {
+    producers_.emplace_back([&, i] {
+      producerPool(pathQueue_, imageQueue_, pipeline, processedCount_);
+    });
+  }
+}
+
+/** ThreadController launch consumer function **/
+void ThreadController::launchConsumer(const std::string& output_dir) {
+  consumer_ =
+      std::thread([&, output_dir] { consumerThread(imageQueue_, output_dir); });
+}
+
+/** ThreadController wait for completion function **/
+void AugmentationController::waitForCompletion() {
+  for (auto& t : producers_) {
+    if (t.joinable()) t.join();
+  }
+
+  imageQueue_.setDone();
+
+  if (consumer_.joinable()) consumer_.join();
+}

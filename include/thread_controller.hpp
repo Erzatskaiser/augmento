@@ -61,8 +61,7 @@ class ThreadController {
    * @param iterations Number of augmentations per image.
    * @param pipeline Augmentation pipeline.
    */
-  void launchProducers(const std::vector<fs::path>& image_paths, int iterations,
-                       Pipeline& pipeline);
+  void launchProducers(Pipeline& pipeline);
 
   /**
    * @brief Launches consumer thread that saves augmented images from

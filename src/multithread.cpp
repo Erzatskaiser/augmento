@@ -14,33 +14,30 @@
 
 #include "multithread.hpp"
 
-std::atomic<size_t> g_processedCount = 0;
-
 /** Producer pool **/
 void producerPool(SafeQueue<fs::path>& pathQueue, SafeQueue<Image>& outputQueue,
-                  Pipeline& pipeline, int iterations) {
+                  Pipeline& pipeline, std::atomic<size_t>& processedCount) {
   fs::path path;
   while (pathQueue.pop(path)) {
-    for (int i = 0; i < iterations; ++i) {
-      try {
-        Image img(path);
-        pipeline.apply(img);
-        outputQueue.push(std::move(img));
-      } catch (const std::exception& e) {
-        std::cerr << "[WARN] Failed to process " << path << ": " << e.what()
-                  << "\n";
-      }
+    try {
+      Image img(path);
+      pipeline.apply(img);
+      outputQueue.push(std::move(img));
+      ++processedCount;
+    } catch (const std::exception& e) {
+      std::cerr << "[WARN] Failed to process " << path << ": " << e.what()
+                << "\n";
     }
   }
 }
 
 /** Consumer pool */
-void consumerThread(SafeQueue<Image>& queue, const std::string& outputDir) {
+void consumerThread(SafeQueue<Image>& queue, const std::string& outputDir,
+                    std::atmonic<size_t>& processedCount) {
   Image img;
   while (queue.pop(img)) {
     try {
       img.save(outputDir);
-      ++g_processedCount;
 
       if (g_processedCount % 100 == 0) {
         std::cout << "[INFO] Saved " << g_processedCount << " images...\n";
