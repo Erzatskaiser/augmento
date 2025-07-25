@@ -7,13 +7,14 @@
  */
 
 #include "../include/json.hpp"
+
 #include <simdjson.h>
 
 using simdjson::padded_string;
-using simdjson::ondemand::parser;
+using simdjson::simdjson_error;
 using simdjson::ondemand::document;
 using simdjson::ondemand::object;
-using simdjson::simdjson_error;
+using simdjson::ondemand::parser;
 
 ConfigSpec parseConfigFile(const std::string& json_path) {
   ConfigSpec config;
@@ -32,7 +33,8 @@ ConfigSpec parseConfigFile(const std::string& json_path) {
   try {
     doc = json_parser.iterate(json_data);
   } catch (const simdjson_error& e) {
-    throw std::runtime_error("[ERROR] Failed to parse JSON configuration file.");
+    throw std::runtime_error(
+        "[ERROR] Failed to parse JSON configuration file.");
   }
 
   try {
@@ -103,14 +105,16 @@ ConfigSpec parseConfigFile(const std::string& json_path) {
         if (!name_val.is_null()) {
           name = std::string(name_val.get_string().value());
         } else {
-          throw std::runtime_error("[ERROR] Pipeline operation missing 'name' field.");
+          throw std::runtime_error(
+              "[ERROR] Pipeline operation missing 'name' field.");
         }
 
         // Parse prob (optional)
         if (auto prob_val = op_obj["prob"]; !prob_val.is_null()) {
           prob = prob_val.get_double().value();
           if (prob < 0.0 || prob > 1.0) {
-            throw std::runtime_error("[ERROR] Probability must be between 0 and 1.");
+            throw std::runtime_error(
+                "[ERROR] Probability must be between 0 and 1.");
           }
         }
 
@@ -129,9 +133,9 @@ ConfigSpec parseConfigFile(const std::string& json_path) {
     }
 
   } catch (const simdjson_error& e) {
-    throw std::runtime_error(std::string("[ERROR] While accessing JSON fields: ") + e.what());
+    throw std::runtime_error(
+        std::string("[ERROR] While accessing JSON fields: ") + e.what());
   }
 
   return config;
 }
-
