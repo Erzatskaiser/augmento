@@ -6,10 +6,10 @@
 
 ## 🚀 Features
 
-- 🔁 **Modular Augmentation Pipeline** – Compose complex augmentation sequences easily
-- 🧵 **Multithreaded Execution** – Speed up augmentation with producer-consumer threading
-- 🔧 **Configurable via CLI** – Run augmentations without writing any code
-- ⚡ **Built for Speed** – Engineered for high-throughput augmentation on large datasets
+- **Modular Augmentation Pipeline** – Compose complex augmentation sequences easily
+- **Multithreaded Execution** – Speed up augmentation with producer-consumer threading
+- **Configurable via CLI** – Run augmentations without writing any code
+- **Built for Speed** – Engineered for high-throughput augmentation on large datasets
 
 ---
 
