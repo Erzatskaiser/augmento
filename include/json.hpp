@@ -14,10 +14,12 @@
 #include <vector>
 #include <random>
 #include <utility>
+#include <thread>
 #include <stdexcept>
+#include <filesystem>
 #include <simdjson.h>
 
-using fs = std::filesystem;
+namespace fs = std::filesystem;
 using namespace simdjson;
 
 /**
@@ -32,9 +34,8 @@ struct ConfigSpec {
   bool deterministic = true;
   unsigned int seed = std::random_device{}();
 
-  std::vector<fs::paths> image_paths;
-  std::vector<std::pair<std::string, double>> pipeline_specs_no_params;
-  std::vector<std::tuple<std::string, ParamList, double>> pipeline_specs_params;
+  std::vector<fs::path> image_paths;
+  std::vector<std::tuple<std::string, std::vector<double>, double>> pipeline_specs;
 };
 
 /**

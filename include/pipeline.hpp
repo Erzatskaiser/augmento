@@ -21,6 +21,7 @@
 #include <unordered_map>
 #include <vector>
 
+#include "json.hpp"
 #include "factory.hpp"
 #include "image.hpp"
 #include "operation.hpp"
