@@ -17,8 +17,7 @@ void Pipeline::addOperation(const OperationEntry& op) {
 
 /* Apply the pipeline to an image using internal seeding based on image ID */
 void Pipeline::apply(Image& img) {
-  thread_local std::mt19937 rand(base_seed_ +
-                                 static_cast<unsigned int>(img.getId()));
+  std::mt19937 rand(base_seed_ + static_cast<unsigned int>(img.getName()));
   std::uniform_real_distribution<double> dist(0.0, 1.0);
 
   // Iterate over operations, applying operation
@@ -30,7 +29,7 @@ void Pipeline::apply(Image& img) {
 
 /* Apply the pipeline to an image using an externally provided seed */
 void Pipeline::apply(Image& img, unsigned int seed) {
-  thread_local std::mt19937 rand(seed);
+  std::mt19937 rand(seed);
   std::uniform_real_distribution<double> dist(0.0, 1.0);
 
   // Iterate over operations, applying operation

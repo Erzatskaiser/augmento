@@ -58,8 +58,9 @@ void ThreadController::launchProducers(Pipeline& pipeline) {
 
 /** ThreadController launch consumer function **/
 void ThreadController::launchConsumer(const std::string& output_dir) {
-  consumer_ =
-      std::thread([&, output_dir] { consumerThread(imageQueue_, output_dir, processedCount_); });
+  consumer_ = std::thread([&, output_dir] {
+    consumerThread(imageQueue_, output_dir, processedCount_);
+  });
 }
 
 /** ThreadController wait for completion function **/

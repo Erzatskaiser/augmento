@@ -34,7 +34,6 @@ void producerPool(SafeQueue<fs::path>& pathQueue, SafeQueue<Image>& outputQueue,
 /** Consumer pool */
 void consumerThread(SafeQueue<Image>& queue, const std::string& outputDir,
                     std::atomic<size_t>& processedCount) {
-
   Image img;
   while (queue.pop(img)) {
     try {

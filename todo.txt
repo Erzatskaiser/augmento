@@ -3,3 +3,5 @@
 -> Parse JSON Config
 -> Minimal CLI Frontend
 -> Plugin support (user defined augmentation methods)
+-> Implement deterministic vs not modes
+--> configurePipeline that takes ConfigSpec object
