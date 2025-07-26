@@ -82,17 +82,6 @@ ConfigSpec parseConfigFile(const std::string& json_path) {
       config.seed = static_cast<unsigned int>(seed_val.get_uint64().value());
     }
 
-    // image_paths (required)
-    auto paths_val = doc["image_paths"];
-    if (!paths_val.is_null()) {
-      for (auto path_val : paths_val.get_array().value()) {
-        std::string p = std::string(path_val.get_string().value());
-        config.image_paths.push_back(fs::path(p));
-      }
-    } else {
-      throw std::runtime_error("[ERROR] Missing required field image_paths.");
-    }
-
     // pipeline - detect which style is used
     auto pipeline_val = doc["pipeline"];
     if (!pipeline_val.is_null()) {

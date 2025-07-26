@@ -34,7 +34,6 @@ struct ConfigSpec {
   bool verbose = true;
   unsigned int seed = std::random_device{}();
 
-  std::vector<fs::path> image_paths;
   std::vector<std::tuple<std::string, std::vector<double>, double>> pipeline_specs;
 };
 

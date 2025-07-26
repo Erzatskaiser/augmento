@@ -363,6 +363,10 @@ void AdjustHue::apply(Image& img, std::mt19937& rng) const {
   img.logOperation("AdjustHue: " + std::to_string(hue));
 }
 
+std::string AdjustHue::name() const {
+  return "AdjustHuue: Randomly adjusts image hue";
+}
+
 /** ---------------- InjectNoise ---------------- **/
 InjectNoise::InjectNoise()
     : mean_min_(-10.0), mean_max_(10.0), stdev_min_(0.0), stdev_max_(20.0) {}
