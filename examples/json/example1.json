@@ -1,9 +1,9 @@
 {
-  "output_dir": "output",
-  "input_dir": "input_images",
+  "output_dir": "..",
+  "input_dir": "../examples/images/",
   "iterations": 3,
   "num_threads": 4,
-  "queue_capacity": 256,
+  "queue_capacity": 128,
   "verbose": true,
   "seed": 12345,
   "pipeline": [

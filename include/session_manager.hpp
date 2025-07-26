@@ -1,12 +1,14 @@
 /**
  * @file session_manager.hpp
- * @brief Orchestrates config, parsing, pipeline construction, and parallelization
+ * @brief Orchestrates config, parsing, pipeline construction, and
+ * parallelization
  * @author Emanuel Butsana
  * @Data Initial release: July 25, 2025
  *
- * Defines the SessionManager class, which serves as the main entry point for managing
- * a complete augmentation session. It supports JSON-based configuration, oversees
- * pipeline instantiation, thread management, and ensures orderly execution flow.
+ * Defines the SessionManager class, which serves as the main entry point for
+ * managing a complete augmentation session. It supports JSON-based
+ * configuration, oversees pipeline instantiation, thread management, and
+ * ensures orderly execution flow.
  */
 
 #pragma once
@@ -22,57 +24,58 @@
 namespace fs = std::filesystem;
 
 class SessionManager {
-  public: 
-    /**
-     * @brief Constructs the session manager with command-line arguments.
-     * @param argc Argument count from main.
-     * @param argv Argument vector from main.
-     */
-    explicit SessionManager(int argc, char* argv[]);
+ public:
+  /**
+   * @brief Constructs the session manager with command-line arguments.
+   * @param argc Argument count from main.
+   * @param argv Argument vector from main.
+   */
+  explicit SessionManager(int argc, char* argv[]);
 
-    /**
-     * @brief Executes the full augmentation session.
-     * @return Exit code (0 on sucess, non-zero on failure).
-     */
-    int execute();
+  /**
+   * @brief Executes the full augmentation session.
+   * @return Exit code (0 on sucess, non-zero on failure).
+   */
+  int execute();
 
-    private:
-      /**
-       * @brief Parses any CLI arguments
-       *
-       * Recognixed flags:
-       * - --config <path> or -c <path>: JSON configuration path
-       * - --tui: Use TUI mode instead of config file
-       * - --dry-run: Perform setup but skip augmentation execution
-       * - --help: Show user help on how to use the user interface
-       * Unrecognized arguments throw an error.
-       */
-      void parseArguments();
+ private:
+  /**
+   * @brief Parses any CLI arguments
+   *
+   * Recognixed flags:
+   * - --config <path> or -c <path>: JSON configuration path
+   * - --tui: Use TUI mode instead of config file
+   * - --dry-run: Perform setup but skip augmentation execution
+   * - --help: Show user help on how to use the user interface
+   * Unrecognized arguments throw an error.
+   */
+  void parseArguments();
 
-      /**
-       * @brief Loads image paths from input directory
-       */
-      void loadImages();
+  /**
+   * @brief Loads image paths from input directory
+   */
+  void loadImages();
 
-      /**
-       * @brief Loads and validates configuration from JSON file.
-       */
-      void loadConfiguration();
+  /**
+   * @brief Loads and validates configuration from JSON file.
+   */
+  void loadConfiguration();
 
-      /**
-       * @brief Prepares the pipeline form parsed configuration data.
-       */
-      void preparePipeline();
+  /**
+   * @brief Prepares the pipeline form parsed configuration data.
+   */
+  void preparePipeline();
 
-      /**
-       * @brief Launches multithreaded producer-consumer system.
-       */
-      void launchThreads();
+  /**
+   * @brief Launches multithreaded producer-consumer system.
+   */
+  void launchThreads();
 
-      std::string config_path_;               ///< Path to the JSON configuration file.
-      ConfigSpec config_;	              ///< Parsed configuration values.
-      Pipeline pipeline_;	              ///< Configured augmentation pipeline.
-      std::vector<fs::path> image_paths_;      ///< Input image paths
-      int argc_;                              ///< Argument count from main().
-      char** argv_;     		      ///< Argument vector from main().
+  std::string config_path_;            ///< Path to the JSON configuration file.
+  ConfigSpec config_;                  ///< Parsed configuration values.
+  Pipeline pipeline_;                  ///< Configured augmentation pipeline.
+  std::vector<fs::path> image_paths_;  ///< Input image paths
+  int argc_;                           ///< Argument count from main().
+  char** argv_;                        ///< Argument vector from main().
+  bool dry_run_ = false;	       ///< Note whether dry run.
 };

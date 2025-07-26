@@ -26,7 +26,7 @@ int SessionManager::execute() {
       std::chrono::duration_cast<std::chrono::milliseconds>(end - start)
           .count();
   std::cout << "[INFO] Completed augmentation process in " << duration_ms
-            << ".\n";
+            << " ms.\n";
   return 0;
 }
 
@@ -37,20 +37,16 @@ void SessionManager::parseArguments() {
   for (int i = 1; i < argc_; ++i) {
     std::string arg = argv_[i];
 
-    if ((arg == "--config" || arg == "-c") && i+1 < argc_) {
+    if ((arg == "--config" || arg == "-c") && i + 1 < argc_) {
       config_path_ = argv_[++i];
       config_provided = true;
-    }
-    else if (arg == "--tui") {
+    } else if (arg == "--tui") {
       std::cout << "[INFO] TUI mode not yet implemented.\n";
-    }
-    else if (arg == "--dry-run") {
-      config_.verbose = true;
-      config_.iterations = 0;
+    } else if (arg == "--dry-run") {
+      dry_run_ = true;
       std::cout << "[INFO] Dry-run mode enabled.\n";
-    }
-    else if ((arg == "--help") || (arg == "-h")) {
-     std::cout << R"(
+    } else if ((arg == "--help") || (arg == "-h")) {
+      std::cout << R"(
 Usage: augmento [OPTIONS]
 
 Required:
@@ -62,8 +58,7 @@ Optional:
   --help, -h            Show this help message and exit
 )";
       std::exit(0);
-    }
-    else {
+    } else {
       throw std::invalid_argument("[ERROR] Unrecognized flag " + arg + ".");
     }
 
@@ -80,7 +75,7 @@ void SessionManager::loadImages() {
   for (const auto& entry : fs::directory_iterator(config_.input_dir)) {
     if (entry.is_regular_file()) {
       image_paths_.push_back(entry.path());
-    }		  
+    }
   }
 }
 
@@ -100,10 +95,12 @@ void SessionManager::preparePipeline() {
 
 /* Executes augmentation over specified number of threads */
 void SessionManager::launchThreads() {
-  if (config_.iterations == 0) {
-    std::cout << "[INFO] Successfully completed dry un.\n";
-    return;
+  if (dry_run_) {
+    std::cout << "[INFO] Successfully completed dry run.\n";
+    std::exit(0);
   }
-  ThreadController thread_controller(config_.num_threads, config_.queue_capacity);
-  thread_controller.run(image_paths_, config_.iterations, pipeline_, config_.output_dir, config_.verbose);
+  ThreadController thread_controller(config_.num_threads,
+                                     config_.queue_capacity);
+  thread_controller.run(image_paths_, config_.iterations, pipeline_,
+                        config_.output_dir, config_.verbose);
 }

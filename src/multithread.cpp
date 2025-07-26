@@ -39,7 +39,7 @@ void consumerThread(SafeQueue<Image>& queue, const std::string& outputDir,
     try {
       img.save(outputDir);
 
-      if (processedCount % 20 == 0) {
+      if (processedCount % 5 == 0) {
         std::cout << "[INFO] Saved " << processedCount << " images...\n";
       }
     } catch (const std::exception& e) {

@@ -10,8 +10,8 @@
  */
 
 #include <atomic>
-#include <iostream>
 #include <filesystem>
+#include <iostream>
 #include <stdexcept>
 #include <string>
 #include <thread>
@@ -50,8 +50,9 @@ class ThreadController {
    * @param output_dir Directory to save augmented images.
    * @param iterations Number of augmentations to perform per image.
    */
-  void run(const std::vector<fs::path>& image_paths, int iterations, Pipeline& pipeline,
-           const std::string& output_dir, bool verbose = false);
+  void run(const std::vector<fs::path>& image_paths, int iterations,
+           Pipeline& pipeline, const std::string& output_dir,
+           bool verbose = false);
 
  private:
   /**

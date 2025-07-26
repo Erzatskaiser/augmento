@@ -9,15 +9,16 @@
 
 #pragma once
 
-#include <string>
-#include <tuple>
-#include <vector>
-#include <random>
-#include <utility>
-#include <thread>
-#include <stdexcept>
-#include <filesystem>
 #include <simdjson.h>
+
+#include <filesystem>
+#include <random>
+#include <stdexcept>
+#include <string>
+#include <thread>
+#include <tuple>
+#include <utility>
+#include <vector>
 
 namespace fs = std::filesystem;
 using namespace simdjson;
@@ -34,7 +35,8 @@ struct ConfigSpec {
   bool verbose = true;
   unsigned int seed = std::random_device{}();
 
-  std::vector<std::tuple<std::string, std::vector<double>, double>> pipeline_specs;
+  std::vector<std::tuple<std::string, std::vector<double>, double>>
+      pipeline_specs;
 };
 
 /**

@@ -37,7 +37,10 @@ void ThreadController::run(const std::vector<fs::path>& image_paths,
   }
 
   for (const auto& path : image_paths) {
-    for (int i = 0; i < iterations; ++i) pathQueue_.push(path);
+    for (int i = 0; i < iterations; ++i){
+      pathQueue_.push(path);
+      pathQueue_.setDone();
+    }
   }
 
   launchProducers(pipeline);

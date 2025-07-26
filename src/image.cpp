@@ -81,10 +81,11 @@ int Image::save(const std::string& path, const std::string& ext) const {
   }
 
   // Determine filename
-  std::string base = name_.empty() ? "image_" + std::to_string(id_)
+  std::string base = name_.empty() ? "image"
                                    : fs::path(name_).stem().string();
+  std::string filename = base + "_" + std::to_string(id_) + ext;
   fs::path outputPath =
-      path.empty() ? cwd / (base + ext) : fs::path(path) / (base + ext);
+      path.empty() ? cwd / filename : fs::path(path) / filename;
 
   // Write image to file
   if (!cv::imwrite(outputPath.string(), data_)) return -1;
