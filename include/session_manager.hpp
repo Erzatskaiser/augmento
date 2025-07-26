@@ -11,9 +11,14 @@
 
 #pragma once
 
+#include <chrono>
+#include <iostream>
+
 #include "json.hpp"
 #include "pipeline.hpp"
 #include "thread_controller.hpp"
+
+namespace fs = std::filesystem;
 
 class SessionManager {
   public: 
@@ -22,7 +27,7 @@ class SessionManager {
      * @param argc Argument count from main.
      * @param argv Argument vector from main.
      */
-    explicit SessionManager(int argc, char* argv[]);
+    explicit SessionManager(const int argc, const char* argv[]);
 
     /**
      * @brief Executes the full augmentation session.
@@ -33,11 +38,22 @@ class SessionManager {
     private:
       /**
        * @brief Parses any CLI arguments
+       *
+       * Recognixed flags:
+       * - --config <path> or -c <path>: JSON configuration path
+       * - --tui: Use TUI mode instead of config file
+       * - --dry-run: Perform setup but skip augmentation execution
+       * Unrecognized arguments throw an error.
        */
       void parseArguments();
 
       /**
-       * @brief Loaods and validates configuration from JSON file.
+       * @brief Loads image paths from input directory
+       */
+      void loadImages();
+
+      /**
+       * @brief Loads and validates configuration from JSON file.
        */
       void loadConfiguration();
 
@@ -55,6 +71,7 @@ class SessionManager {
       ConfigSpec config_;	              ///< Parsed configuration values.
       Pipeline pipeline_;	              ///< Configured augmentation pipeline.
       ThreadController thread_controller_;    ///< Thread pool controller.
+      std::vector<fs::path> image_paths;      ///< Input image paths
       int argc_;                              ///< Argument count from main().
       char* argv_[];     		      ///< Argument vector from main().
 }

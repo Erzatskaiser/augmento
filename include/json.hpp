@@ -27,6 +27,7 @@ using namespace simdjson;
  */
 struct ConfigSpec {
   std::string output_dir;
+  std::string input_dir;
   int iterations = 1;
   size_t num_threads = std::thread::hardware_concurrency();
   size_t queue_capacity = 128;

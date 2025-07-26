@@ -46,6 +46,14 @@ ConfigSpec parseConfigFile(const std::string& json_path) {
       throw std::runtime_error("[ERROR] Missing required field output_dir.");
     }
 
+    // input_dir (required)
+    auto input_dir_val = doc["input_dir"];
+    if (!input_dir_val.is_null()) {
+      config.input_dir = std::string(input_dir_val.get_string().value());
+    } else {
+      throw std::runtime_error("[ERROR] Missing required field input_dir.");
+    }
+
     // iterations (optional, default 1)
     if (auto iter_val = doc["iterations"]; !iter_val.is_null()) {
       config.iterations = static_cast<int>(iter_val.get_uint64().value());
