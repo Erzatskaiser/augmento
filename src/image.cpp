@@ -67,28 +67,24 @@ int Image::preview(const std::string& window_name, int wait_ms) const {
 
 /* Save image to specified path and extension */
 int Image::save(const std::string& path, const std::string& ext) const {
-  if (path.empty()) return -1;
+  // Decide on output directory
+  fs::path out_dir = path.empty() ? fs::current_path() : fs::path(path);
 
   // Create output directory if it doesn't exist
-  if (!fs::exists(path)) {
-    if (!fs::create_directories(fs::path(path))) return -1;
+  if (!fs::exists(out_dir)) {
+    if (!fs::create_directories(out_dir)) return -1;
   }
 
-  // Saving in cwd if path is not set
-  fs::path cwd;
-  if (path.empty()) {
-    cwd = fs::current_path();
-  }
-
-  // Determine filename
-  std::string base = name_.empty() ? "image"
-                                   : fs::path(name_).stem().string();
+  // Determine filename base
+  std::string base = name_.empty() ? "image" : fs::path(name_).stem().string();
   std::string filename = base + "_" + std::to_string(id_) + ext;
-  fs::path outputPath =
-      path.empty() ? cwd / filename : fs::path(path) / filename;
 
-  // Write image to file
+  // Final output path
+  fs::path outputPath = out_dir / filename;
+
+  // Save image
   if (!cv::imwrite(outputPath.string(), data_)) return -1;
 
   return 0;
 }
+
