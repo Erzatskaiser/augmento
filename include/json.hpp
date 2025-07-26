@@ -32,7 +32,6 @@ struct ConfigSpec {
   size_t num_threads = std::thread::hardware_concurrency();
   size_t queue_capacity = 128;
   bool verbose = true;
-  bool deterministic = true;
   unsigned int seed = std::random_device{}();
 
   std::vector<fs::path> image_paths;

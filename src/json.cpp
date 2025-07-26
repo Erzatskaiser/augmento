@@ -77,11 +77,6 @@ ConfigSpec parseConfigFile(const std::string& json_path) {
       config.verbose = vb_val.get_bool().value();
     }
 
-    // deterministic (optional)
-    if (auto det_val = doc["deterministic"]; !det_val.is_null()) {
-      config.deterministic = det_val.get_bool().value();
-    }
-
     // seed (optional)
     if (auto seed_val = doc["seed"]; !seed_val.is_null()) {
       config.seed = static_cast<unsigned int>(seed_val.get_uint64().value());

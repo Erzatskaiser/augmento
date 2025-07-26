@@ -12,6 +12,7 @@
 #pragma once
 
 #include <chrono>
+#include <cstdlib>
 #include <iostream>
 
 #include "json.hpp"
@@ -27,7 +28,7 @@ class SessionManager {
      * @param argc Argument count from main.
      * @param argv Argument vector from main.
      */
-    explicit SessionManager(const int argc, const char* argv[]);
+    explicit SessionManager(int argc, char* argv[]);
 
     /**
      * @brief Executes the full augmentation session.
@@ -43,6 +44,7 @@ class SessionManager {
        * - --config <path> or -c <path>: JSON configuration path
        * - --tui: Use TUI mode instead of config file
        * - --dry-run: Perform setup but skip augmentation execution
+       * - --help: Show user help on how to use the user interface
        * Unrecognized arguments throw an error.
        */
       void parseArguments();
@@ -70,8 +72,7 @@ class SessionManager {
       std::string config_path_;               ///< Path to the JSON configuration file.
       ConfigSpec config_;	              ///< Parsed configuration values.
       Pipeline pipeline_;	              ///< Configured augmentation pipeline.
-      ThreadController thread_controller_;    ///< Thread pool controller.
-      std::vector<fs::path> image_paths;      ///< Input image paths
+      std::vector<fs::path> image_paths_;      ///< Input image paths
       int argc_;                              ///< Argument count from main().
-      char* argv_[];     		      ///< Argument vector from main().
-}
+      char** argv_;     		      ///< Argument vector from main().
+};
