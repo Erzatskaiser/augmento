@@ -46,8 +46,6 @@ with additional optional flags:
 --help, -h     # Display help information and exit
 ```
 
----
-
 ## 🧾 Configuration file
 
 **augmento** requires a JSON config file that defines the augmentation pipeline and parameters. Example configs are included under **example/**. Here's an overview of the required fields:
@@ -92,8 +90,6 @@ Below are the operations you can define so far in the `pipeline_specs` array of 
 | `random erase`         | Randomly erases rectangular regions                  | *(none)* OR `min_h`, `max_h`, `min_w`, `max_w`                                |
 
 When parameters are not provided, the pipeline will randomly select values within reasonable defaults to ensure variability and robustness of augmentation. Refer to the source code or documentation for specific default ranges used by each operation.
-
----
 
 ## 📚 Developer Documentation
 
