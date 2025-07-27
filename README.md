@@ -31,6 +31,9 @@ mkdir build && cd build
 cmake ..
 make
 ```
+
+---
+
 ## 🛠️ Usage
 
 After building, you can rum augmento from the command line:
