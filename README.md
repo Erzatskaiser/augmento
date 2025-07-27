@@ -96,3 +96,15 @@ Below are the operations you can define so far in the `pipeline_specs` array of 
 | `random erase`         | Randomly erases rectangular regions                  | *(none)* OR `min_h`, `max_h`, `min_w`, `max_w`                                |
 
 When parameters are not provided, the pipeline will randomly select values within reasonable defaults to ensure variability and robustness of augmentation. Refer to the source code or documentation for specific default ranges used by each operation.
+
+---
+
+## 📚 Developer Documentation
+
+This project uses [Doxygen](https://www.doxygen.nl/) to generate API documentation from inline comments. To generate and view the docs locally, install doxygen and run
+
+```bash
+doxygen Doxyfile
+```
+
+The newly created documentation can be accessed under `doc/html/annotated.html`.
