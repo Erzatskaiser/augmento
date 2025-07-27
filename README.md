@@ -22,7 +22,7 @@ Before building, make sure the following libraries are installed on your system:
 - CMake (version 3.10 or higher)
 - A C++17-capable compiler
 
-Upon installation of these dependencies, augmento can be built as follows:
+Upon installation of these dependencies, **augmento** can be built as follows:
 
 ```bash
 git clone https://github.com/Erzatskaiser/augmento.git
@@ -49,3 +49,28 @@ with additional optional flags:
 --tui          # Launch TUI mode (not yet implemented)
 --help, -h     # Display help information and exit
 ```
+
+---
+
+## 🧾 Configuration file
+
+**augmento** requires a JSON config file that defines the augmentation pipeline and parameters. Example configs are included under **example/**. Here's an overview of the required fields:
+
+```json
+{
+  "input_dir": "images/input",
+  "output_dir": "images/output",
+  "num_threads": number of threads (int),
+  "iterations": number of iterations per image (uint, default 1),
+  "queue_capacity": size of internal buffer (uint, default 128),
+  "seed": seed for internal random number generator (uint),
+  "verbose": verbosity of programe (bool, default true),
+  "pipeline_specs": [
+    {
+      "operation": "operation name",
+      "param": operation parameter
+    }
+  ]
+}
+```
+The implemented operations are the following
