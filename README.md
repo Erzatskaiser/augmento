@@ -41,7 +41,7 @@ After building, you can rum augmento from the command line:
 with additional optional flags:
 
 ```bash
---drun-run     # Perform a dry run without writing files
+--dry-run     # Perform a dry run without writing files
 --tui          # Launch TUI mode (not yet implemented)
 --help, -h     # Display help information and exit
 ```
