@@ -1,6 +1,3 @@
-<p align="center">
-  <img src="./assets/augmento.png" alt="augmento logo" width="400"/>
-</p>
 
 ## augmento
 
