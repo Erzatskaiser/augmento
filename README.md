@@ -15,7 +15,14 @@
 
 ## 📦 Installation
 
-For now, clone and build manually:
+Before building, make sure the following libraries are installed on your system:
+
+- OpenCV (version 4 or higher)
+- simdjson
+- CMake (version 3.10 or higher)
+- A C++17-capable compiler
+
+Upon installation of these dependencies, augmento can be built as follows:
 
 ```bash
 git clone https://github.com/Erzatskaiser/augmento.git
@@ -23,3 +30,19 @@ cd augmento
 mkdir build && cd build
 cmake ..
 make
+```
+## 🛠️ Usage
+
+After building, you can rum augmento from the command line:
+
+```bash
+./augmento --config path/to/config.json [OPTIONS]
+```
+
+with additional optional flags:
+
+```bash
+--drun-run     # Perform a dry run without writing files
+--tui          # Launch TUI mode (not yet implemented)
+--help, -h     # Display help information and exit
+```
