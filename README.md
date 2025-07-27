@@ -60,11 +60,11 @@ with additional optional flags:
 {
   "input_dir": "images/input",
   "output_dir": "images/output",
-  "num_threads": number of threads (int),
-  "iterations": number of iterations per image (uint, default 1),
-  "queue_capacity": size of internal buffer (uint, default 128),
-  "seed": seed for internal random number generator (uint),
-  "verbose": verbosity of programe (bool, default true),
+  "num_threads": "number of threads (int)",
+  "iterations": "number of iterations per image (uint, default 1)",
+  "queue_capacity": "size of internal buffer (uint, default 128)",
+  "seed": "seed for internal random number generator (uint)",
+  "verbose": "verbosity of programe (bool, default true)",
   "pipeline_specs": [
     {
       "operation": "operation name",
@@ -73,4 +73,24 @@ with additional optional flags:
   ]
 }
 ```
-The implemented operations are the following
+The implemented operations are the following:
+
+| Operation              | Description                                          | Key Parameters                                                                 |
+|------------------------|------------------------------------------------------|--------------------------------------------------------------------------------|
+| `RotateImage`          | Rotates image randomly                              | `min_angle`, `max_angle`, `rot_type` (0 = no crop, 1 = crop, 2 = fill)        |
+| `ReflectImage`         | Flips image vertically or horizontally              | *(none)*                                                                      |
+| `ResizeImage`          | Scales image or resizes to random dimensions        | EITHER: `min_scale`, `max_scale` OR `min_w`, `max_w`, `min_h`, `max_h`        |
+| `CropImage`            | Crops a fixed or random region                      | `width`, `height` [optional: `x`, `y`]                                         |
+| `AffineTransform`      | Applies affine transform (random or fixed matrix)   | *(none)* – uses internally generated 2×3 matrix                               |
+| `ColorJitter`          | Adjusts brightness, contrast, saturation, hue       | `brightness_range`, `contrast_range`, `saturation_range`, `hue_range`         |
+| `AdjustBrightness`     | Adjusts brightness                                   | `min_val`, `max_val`                                                          |
+| `AdjustContrast`       | Adjusts contrast                                     | `min_val`, `max_val`                                                          |
+| `AdjustSaturation`     | Adjusts saturation                                   | `min_val`, `max_val`                                                          |
+| `AdjustHue`            | Adjusts hue                                          | `min_val`, `max_val`                                                          |
+| `InjectNoise`          | Adds Gaussian noise                                  | `mean_min`, `mean_max`, `stdev_min`, `stdev_max`                              |
+| `BlurImage`            | Applies blur with square averaging kernel            | `min_k`, `max_k` (kernel size, odd integers)                                  |
+| `SharpenImage`         | Sharpens image using Laplacian                       | *(none)*                                                                      |
+| `HistogramEqualization`| Improves contrast via histogram equalization         | *(none)*                                                                      |
+| `WhiteBalance`         | Performs simple white balance correction             | *(none)*                                                                      |
+| `ToGrayscale`          | Converts image to grayscale                          | *(none)*                                                                      |
+| `RandomErase`          | Randomly masks rectangular patches                   | `min_h`, `max_h`, `min_w`, `max_w`  
