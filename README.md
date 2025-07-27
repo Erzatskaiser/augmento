@@ -20,7 +20,7 @@
 For now, clone and build manually:
 
 ```bash
-git clone https://github.com/yourusername/augmento.git
+git clone https://github.com/Erzatskaiser/augmento.git
 cd augmento
 mkdir build && cd build
 cmake ..
