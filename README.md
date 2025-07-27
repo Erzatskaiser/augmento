@@ -75,7 +75,7 @@ with additional optional flags:
 ```
 Below are the operations you can define so far in the `pipeline_specs` array of your JSON config:
 
-| Operation Name         | Description                                          | Parameters (Positional Order in `params`)                                     |
+| Operation Name         | Description                                          | Parameters                                                                    |
 |------------------------|------------------------------------------------------|-------------------------------------------------------------------------------|
 | `rotate`               | Rotates image randomly                               | `min_angle`, `max_angle`, `rot_type` (0 = no crop, 1 = crop, 2 = fill)        |
 | `reflect`              | Flips image vertically or horizontally               | *(none)*                                                                      |
