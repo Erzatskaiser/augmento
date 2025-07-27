@@ -11,8 +11,6 @@
 - **Configurable via CLI** – Run augmentations without writing any code
 - **Built for Speed** – Engineered for high-throughput augmentation on large datasets
 
----
-
 ## 📦 Installation
 
 Before building, make sure the following libraries are installed on your system:
@@ -31,8 +29,6 @@ mkdir build && cd build
 cmake ..
 make
 ```
-
----
 
 ## 🛠️ Usage
 
