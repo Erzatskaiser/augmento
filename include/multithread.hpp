@@ -74,10 +74,9 @@ class SafeQueue {
  * @brief Generic image producer using a shared path queue (task-pool model).
  */
 void producerPool(SafeQueue<fs::path>& pathQueue, SafeQueue<Image>& outputQueue,
-                  Pipeline& pipeline, std::atomic<size_t>& processedCount);
+                  Pipeline& pipeline);
 
 /**
  * @brief Consumer thread that saves augmented images and updates progress.
  */
-void consumerThread(SafeQueue<Image>& queue, const std::string& output_dir,
-                    std::atomic<size_t>& processedCount);
+void consumerThread(SafeQueue<Image>& queue, const std::string& output_dir);

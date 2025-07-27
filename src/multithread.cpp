@@ -16,34 +16,36 @@
 
 /** Producer pool **/
 void producerPool(SafeQueue<fs::path>& pathQueue, SafeQueue<Image>& outputQueue,
-                  Pipeline& pipeline, std::atomic<size_t>& processedCount) {
+                  Pipeline& pipeline) {
   fs::path path;
   while (pathQueue.pop(path)) {
     try {
       Image img(path);
       pipeline.apply(img);
       outputQueue.push(std::move(img));
-      ++processedCount;
     } catch (const std::exception& e) {
       std::cerr << "[WARN] Failed to process " << path << ": " << e.what()
-                << "\n";
+                << std::endl;
     }
   }
 }
 
 /** Consumer pool */
-void consumerThread(SafeQueue<Image>& queue, const std::string& outputDir,
-                    std::atomic<size_t>& processedCount) {
+void consumerThread(SafeQueue<Image>& queue, const std::string& outputDir) {
   Image img;
+  size_t localSaveCount = 0;
+
   while (queue.pop(img)) {
     try {
       img.save(outputDir);
+      ++localSaveCount;
 
-      if (processedCount % 5 == 0) {
-        std::cout << "[INFO] Saved " << processedCount << " images...\n";
+      if (localSaveCount % 5 == 0) {
+        std::cout << "[INFO] Saved " << localSaveCount << " images..."
+                  << std::endl;
       }
     } catch (const std::exception& e) {
-      std::cerr << "[ERROR] Failed to save image: " << e.what() << "\n";
+      std::cerr << "[ERROR] Failed to save image: " << e.what() << std::endl;
     }
   }
 }

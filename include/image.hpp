@@ -10,6 +10,7 @@
 
 #pragma once
 
+#include <algorithm>
 #include <atomic>
 #include <filesystem>
 #include <iostream>
@@ -94,7 +95,7 @@ class Image {
    * @param ext File extension (default ".png").
    * @return 0 on success, -1 on failure.
    */
-  int save(const std::string& path = "", const std::string& ext = ".png") const;
+  int save(const std::string& path = "", const std::string& ext = ".jpg") const;
 
  private:
   cv::Mat data_;                      ///< Raw image matrix.

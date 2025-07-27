@@ -27,7 +27,6 @@ void ThreadController::run(const std::vector<fs::path>& image_paths,
     throw std::invalid_argument(
         "ThreadController: iterations must be at least 1.");
 
-  processedCount_ = 0;
   totalTasks_ = image_paths.size() * iterations;
 
   if (verbose) {
@@ -37,7 +36,7 @@ void ThreadController::run(const std::vector<fs::path>& image_paths,
   }
 
   for (const auto& path : image_paths) {
-    for (int i = 0; i < iterations; ++i){
+    for (int i = 0; i < iterations; ++i) {
       pathQueue_.push(path);
     }
   }
@@ -54,7 +53,7 @@ void ThreadController::run(const std::vector<fs::path>& image_paths,
 void ThreadController::launchProducers(Pipeline& pipeline) {
   for (size_t i = 0; i < numThreads_; ++i) {
     producers_.emplace_back([&, i] {
-      producerPool(pathQueue_, imageQueue_, pipeline, processedCount_);
+      producerPool(pathQueue_, imageQueue_, pipeline);
     });
   }
 }
@@ -62,7 +61,7 @@ void ThreadController::launchProducers(Pipeline& pipeline) {
 /** ThreadController launch consumer function **/
 void ThreadController::launchConsumer(const std::string& output_dir) {
   consumer_ = std::thread([&, output_dir] {
-    consumerThread(imageQueue_, output_dir, processedCount_);
+    consumerThread(imageQueue_, output_dir);
   });
 }
 

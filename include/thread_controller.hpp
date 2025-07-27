@@ -85,5 +85,4 @@ class ThreadController {
   std::vector<std::thread> producers_;     ///< Vector of producer threads.
   std::thread consumer_;                   ///< Consumer thread.
   std::atomic<size_t> totalTasks_{0};      ///< Total tasks available
-  std::atomic<size_t> processedCount_{0};  ///< Count of tasks processed
 };
