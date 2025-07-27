@@ -15,8 +15,6 @@
 
 ## 📦 Installation
 
-> **Note**: Prebuilt binaries and pip install support will be added soon.
-
 For now, clone and build manually:
 
 ```bash
