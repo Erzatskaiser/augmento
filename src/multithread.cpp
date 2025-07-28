@@ -33,19 +33,34 @@ void producerPool(SafeQueue<fs::path>& pathQueue, SafeQueue<Image>& outputQueue,
 /** Consumer pool */
 void consumerThread(SafeQueue<Image>& queue, const std::string& outputDir) {
   Image img;
+  size_t batchSize = 5;
   size_t localSaveCount = 0;
+  std::vector<Image> image_batch;
 
   while (queue.pop(img)) {
     try {
-      img.save(outputDir);
-      ++localSaveCount;
+      image_batch.push_back(std::move(img));
+      if (image_batch.size() >= batchSize) {
+        for (auto& image : image_batch) {
+	  image.save(outputDir);
+	  ++localSaveCount;
+	}
+	image_batch.clear();
+      }
 
-      if (localSaveCount % 5 == 0) {
+      if (localSaveCount % 7 == 0 && localSaveCount != 0) {
         std::cout << "[INFO] Saved " << localSaveCount << " images..."
                   << std::endl;
       }
     } catch (const std::exception& e) {
       std::cerr << "[ERROR] Failed to save image: " << e.what() << std::endl;
     }
+  }
+
+  if (!image_batch.empty()) {
+    for (auto& image  : image_batch) {
+      image.save(outputDir);
+    }
+    image_batch.clear();
   }
 }

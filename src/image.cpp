@@ -34,7 +34,7 @@ cv::Mat& Image::getData() { return data_; }
 const cv::Mat& Image::getData() const { return data_; }
 
 /* Replace image data with a copy of the input */
-void Image::setData(const cv::Mat& newData) { data_ = newData.clone(); }
+void Image::setData(const cv::Mat& newData) { newData.copyTo(data_); }
 
 /* Set image name */
 void Image::setName(const std::string& name) { name_ = name; }

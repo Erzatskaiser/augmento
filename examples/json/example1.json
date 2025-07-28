@@ -2,7 +2,6 @@
   "output_dir": "..",
   "input_dir": "../examples/images/",
   "iterations": 3,
-  "num_threads": 4,
   "queue_capacity": 128,
   "verbose": true,
   "seed": 12345,
