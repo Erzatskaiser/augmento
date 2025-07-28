@@ -2,11 +2,7 @@
   <img src="./assets/augmento.png" alt="augmento logo" width="400"/>
 </p>
 
-## augmento
-
 **augmento** is a high-performance, modular image augmentation toolkit built for flexibility and speed. Designed with a multithreaded pipeline and clean CLI interface, it supports fast, consistent transformations for large datasets in machine learning, computer vision, and synthetic data generation workflows.
-
----
 
 ## 🚀 Features
 
@@ -14,8 +10,6 @@
 - **Multithreaded Execution** – Speed up augmentation with producer-consumer threading
 - **Configurable via CLI** – Run augmentations without writing any code
 - **Built for Speed** – Engineered for high-throughput augmentation on large datasets
-
----
 
 ## 📦 Installation
 
@@ -36,8 +30,6 @@ cmake ..
 make
 ```
 
----
-
 ## 🛠️ Usage
 
 After building, you can rum augmento from the command line:
@@ -49,12 +41,10 @@ After building, you can rum augmento from the command line:
 with additional optional flags:
 
 ```bash
---drun-run     # Perform a dry run without writing files
+--dry-run     # Perform a dry run without writing files
 --tui          # Launch TUI mode (not yet implemented)
 --help, -h     # Display help information and exit
 ```
-
----
 
 ## 🧾 Configuration file
 
@@ -100,8 +90,6 @@ Below are the operations you can define so far in the `pipeline_specs` array of 
 | `random erase`         | Randomly erases rectangular regions                  | *(none)* OR `min_h`, `max_h`, `min_w`, `max_w`                                |
 
 When parameters are not provided, the pipeline will randomly select values within reasonable defaults to ensure variability and robustness of augmentation. Refer to the source code or documentation for specific default ranges used by each operation.
-
----
 
 ## 📚 Developer Documentation
 
