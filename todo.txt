@@ -1,7 +1,5 @@
 -> Modify image .save() method to also save .txt of completed modifications 
--> Implement progress bar
--> Parse JSON Config
--> Minimal CLI Frontend
--> Plugin support (user defined augmentation methods)
--> Implement deterministic vs not modes
---> configurePipeline that takes ConfigSpec object
+-> JSON config : ensure that parser does not throw when user does not include optional keys
+-> TUI : implement basic TUI using FXTUI
+-> Plugin support : define methods to allow users to define their own augmentation functions
+-> Seed : fix augmentations to make sure they use user-defined seed
