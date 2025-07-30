@@ -42,10 +42,10 @@ void consumerThread(SafeQueue<Image>& queue, const std::string& outputDir) {
       image_batch.push_back(std::move(img));
       if (image_batch.size() >= batchSize) {
         for (auto& image : image_batch) {
-	  image.save(outputDir);
-	  ++localSaveCount;
-	}
-	image_batch.clear();
+          image.save(outputDir);
+          ++localSaveCount;
+        }
+        image_batch.clear();
       }
 
       if (localSaveCount % 7 == 0 && localSaveCount != 0) {
@@ -58,7 +58,7 @@ void consumerThread(SafeQueue<Image>& queue, const std::string& outputDir) {
   }
 
   if (!image_batch.empty()) {
-    for (auto& image  : image_batch) {
+    for (auto& image : image_batch) {
       image.save(outputDir);
     }
     image_batch.clear();

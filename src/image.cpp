@@ -81,11 +81,12 @@ int Image::save(const std::string& path, const std::string& ext) const {
 
   // Final output path
   fs::path outputPath = out_dir / filename;
-  
+
   // Decide on compression parameters
   std::vector<int> params;
   std::string lower_ext = ext;
-  std::transform(lower_ext.begin(), lower_ext.end(), lower_ext.begin(), ::tolower);
+  std::transform(lower_ext.begin(), lower_ext.end(), lower_ext.begin(),
+                 ::tolower);
 
   if (lower_ext == ".jpg" || lower_ext == ".jpeg")
     params = {cv::IMWRITE_JPEG_QUALITY, 75};
@@ -96,7 +97,9 @@ int Image::save(const std::string& path, const std::string& ext) const {
   }
 
   // Save image (with or without params
-  bool success = params.empty() ? cv::imwrite(outputPath.string(), data_) : cv::imwrite(outputPath.string(), data_, params);
+  bool success = params.empty()
+                     ? cv::imwrite(outputPath.string(), data_)
+                     : cv::imwrite(outputPath.string(), data_, params);
 
   return success ? 0 : -1;
 }
