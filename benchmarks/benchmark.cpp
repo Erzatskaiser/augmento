@@ -14,10 +14,11 @@ int main(int argc, char* argv[]) {
     auto start = std::chrono::high_resolution_clock::now();
     SessionManager session(argc, argv);
     auto end = std::chrono::high_resolution_clock::now();
-    auto duration_ms = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
-    std:: cout << "Total duration: " << duration_ms << std::endl;
+    auto duration_ms = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
+    std::cout << "[TIMING] Total: " << duration_ms << std::endl;
     return 0;
   } catch (const std::exception& e) {
+    std::cout << "[ERROR] " << e.what() << std::endl;
     return -1;
   } 
 }
