@@ -23,10 +23,10 @@ int SessionManager::execute() {
   launchThreads();
   auto end = std::chrono::high_resolution_clock::now();
   auto duration_ms =
-      std::chrono::duration_cast<std::chrono::milliseconds>(end - start)
+      std::chrono::duration_cast<std::chrono::microseconds>(end - start)
           .count();
-  std::cout << "[INFO] Completed augmentation process in " << duration_ms
-            << " ms.\n";
+  std::cout << "[TIMING] Completed augmentation process in " << duration_ms
+            << " us.\n";
   return 0;
 }
 
