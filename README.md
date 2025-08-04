@@ -59,7 +59,7 @@ with additional optional flags:
   "queue_capacity": "size of internal buffer (uint, default 128)",
   "seed": "seed for internal random number generator (uint)",
   "verbose": "verbosity of program (bool, default true)",
-  "pipeline_specs": [
+  "pipeline": [
     {
       "operation": "operation name",
       "prob": "operation probability (double, 0 to 1)",
