@@ -61,7 +61,7 @@ with additional optional flags:
   "verbose": "verbosity of program (bool, default true)",
   "pipeline": [
     {
-      "operation": "operation name",
+      "name": "operation name",
       "prob": "operation probability (double, 0 to 1)",
       "param(s)": "operation parameter(s)"
     }
