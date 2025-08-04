@@ -38,7 +38,7 @@ def main():
                         json.dump(config, f, indent=2)
 
                     # Run benchmark and capture output
-                    result = subprocess.run(["./benchmark", "--config", "config_template.json"],
+                    result = subprocess.run(["./build/benchmark", "--config", "config_template.json"],
                                             capture_output=True, text=True)
 
                     output = result.stdout
