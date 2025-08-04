@@ -22,8 +22,12 @@ RotateImage::RotateImage(double min_angle, double max_angle, size_t rot_type)
 }
 
 void RotateImage::apply(Image& img, std::mt19937& rng) const {
-  std::uniform_real_distribution<double> angleDist(min_angle_, max_angle_);
-  double angle = angleDist(rng);
+  std::uniform_real_distribution<double> negAngleDist(min_angle_, -5.0);
+  std::uniform_real_distribution<double> posAngleDist(5.0, max_angle_);
+  std::uniform_int_distribution<int> coinFlip(0, 1);
+
+  double angle = coinFlip(rng) ? posAngleDist(rng) : negAngleDist(rng);
+  std::cout << angle << std::endl;
 
   if (rot_type_ == 0) {
     img.setData(rotateImageNoCrop(img.getData(), angle));

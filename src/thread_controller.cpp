@@ -35,15 +35,14 @@ void ThreadController::run(const std::vector<fs::path>& image_paths,
     std::cout << "[INFO] Total tasks to process: " << totalTasks_ << std::endl;
   }
 
+  launchProducers(pipeline);
+  launchConsumer(output_dir);
   for (const auto& path : image_paths) {
     for (int i = 0; i < iterations; ++i) {
       pathQueue_.push(path);
     }
   }
   pathQueue_.setDone();
-
-  launchProducers(pipeline);
-  launchConsumer(output_dir);
   waitForCompletion();
 
   if (verbose) std::cout << "[INFO] Augmentation complete." << std::endl;
