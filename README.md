@@ -62,7 +62,8 @@ with additional optional flags:
   "pipeline_specs": [
     {
       "operation": "operation name",
-      "param": "operation parameter"
+      "prob": "operation probability (double, 0 to 1)",
+      "param(s)": "operation parameter(s)"
     }
   ]
 }
