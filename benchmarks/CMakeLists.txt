@@ -8,7 +8,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 include_directories(${CMAKE_SOURCE_DIR}/../include)
 
 # Your benchmark source file
-set(BENCHMARK_SRC ${CMAKE_SOURCE_DIR}/benchmark.cpp)
+set(BENCHMARK_SRC ${CMAKE_SOURCE_DIR}/src/benchmark.cpp)
 
 # Collect all source files from ../src, excluding main.cpp
 file(GLOB_RECURSE AUGMENTO_SRC_ALL ${CMAKE_SOURCE_DIR}/../src/*.cpp)
