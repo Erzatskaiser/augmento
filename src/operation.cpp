@@ -27,7 +27,6 @@ void RotateImage::apply(Image& img, std::mt19937& rng) const {
   std::uniform_int_distribution<int> coinFlip(0, 1);
 
   double angle = coinFlip(rng) ? posAngleDist(rng) : negAngleDist(rng);
-  std::cout << angle << std::endl;
 
   if (rot_type_ == 0) {
     img.setData(rotateImageNoCrop(img.getData(), angle));

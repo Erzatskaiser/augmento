@@ -18,8 +18,10 @@
 #include <random>
 #include <string>
 #include <tuple>
+#include <cstdint>
 #include <unordered_map>
 #include <vector>
+#include <thread>
 
 #include "factory.hpp"
 #include "image.hpp"
