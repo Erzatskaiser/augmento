@@ -32,6 +32,7 @@ The script will automatically:
 
 After execution, results will be saved in the following structure:
 
+```text
 benchmark/
 ├── benchmark_sweep.py
 ├── output/                # Image samples from benchmark runs
@@ -39,3 +40,4 @@ benchmark/
     ├── benchmark_data.csv # Raw performance data (CSV)
     ├── pipeline_time.png  # Time excluding JSON loading
     └── total_time.png     # Time including JSON loading
+```
