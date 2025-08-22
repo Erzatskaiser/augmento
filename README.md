@@ -104,4 +104,4 @@ The newly created documentation can be accessed under `doc/html/annotated.html`.
 
 ## 📊 Benchmark Results
 
-For information on how to measure performance, see [this](./benchmarks/README.pmd)
+For information on how to measure performance, see [this](./benchmarks/README.md)
