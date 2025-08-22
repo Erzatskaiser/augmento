@@ -6,7 +6,6 @@
 
 This section provides benchmarking insights into **augmento**'s performance. The benchmark evaluates augmentation pipeline throughput across different configurations, measuring both processing efficiency and end-to-end execution time.
 
----
 
 ## ⚙️ Running the Benchmark
 
