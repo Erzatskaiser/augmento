@@ -1,8 +1,8 @@
 {
   "input_dir": "./test/images",
   "output_dir": "./output",
-  "num_threads": 5,
-  "iterations": 1,
+  "num_threads": 16,
+  "iterations": 15,
   "queue_capacity": 128,
   "seed": 671,
   "verbose": true,
