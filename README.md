@@ -2,7 +2,7 @@
   <img src="./assets/augmento.png" alt="augmento logo" width="400"/>
 </p>
 
-**augmento** is a high-performance, modular image augmentation toolkit built for flexibility and speed. Designed with a multithreaded pipeline and clean CLI interface, it supports fast transformations for large datasets in machine learning, computer vision, and synthetic data generation workflows.
+**augmento** is a high-performance, modular image augmentation tool built for flexibility and speed. Designed with a multithreaded pipeline and clean CLI interface, it supports fast transformations for large datasets in machine learning, computer vision, and synthetic data generation workflows.
 
 ## 🚀 Features
 
