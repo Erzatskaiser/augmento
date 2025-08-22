@@ -101,3 +101,5 @@ doxygen Doxyfile
 ```
 
 The newly created documentation can be accessed under `doc/html/annotated.html`.
+
+📊 [Benchmark Results](./benchmark/benchmark.md)
