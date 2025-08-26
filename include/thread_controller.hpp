@@ -52,7 +52,7 @@ class ThreadController {
    */
   void run(const std::vector<fs::path>& image_paths, int iterations,
            Pipeline& pipeline, const std::string& output_dir,
-           bool verbose = false);
+           bool verbose = false, bool save_specs = false);
 
  private:
   /**
@@ -69,7 +69,7 @@ class ThreadController {
    * imageQueue_ to disk.
    * @param output_dir Directory to save images.
    */
-  void launchConsumer(const std::string& output_dir);
+  void launchConsumer(const std::string& output_dir, bool save_specs = false);
 
   /**
    * @brief Waits for all producer threads to finish and signals consumer to

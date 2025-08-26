@@ -20,7 +20,8 @@ void Pipeline::apply(Image& img) {
   uint32_t name_hash =
       static_cast<uint32_t>(std::hash<std::string>{}(img.getName()));
   uint32_t tid_hash = std::hash<std::thread::id>{}(std::this_thread::get_id());
-  uint32_t now = static_cast<uint32_t>(std::chrono::steady_clock::now().time_since_epoch().count());
+  uint32_t now = static_cast<uint32_t>(
+      std::chrono::steady_clock::now().time_since_epoch().count());
   std::mt19937 rand(base_seed_ ^ name_hash ^ tid_hash ^ now);
   std::uniform_real_distribution<double> dist(0.0, 1.0);
 

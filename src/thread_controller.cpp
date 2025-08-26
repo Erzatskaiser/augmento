@@ -18,7 +18,7 @@ ThreadController::ThreadController(size_t numThreads, size_t queueCapacity)
 /** ThreadController run function **/
 void ThreadController::run(const std::vector<fs::path>& image_paths,
                            int iterations, Pipeline& pipeline,
-                           const std::string& output_dir, bool verbose) {
+                           const std::string& output_dir, bool verbose, bool save_specs) {
   if (image_paths.empty()) {
     if (verbose) std::cout << "[WARNING] No image paths provided." << std::endl;
     return;
@@ -36,7 +36,7 @@ void ThreadController::run(const std::vector<fs::path>& image_paths,
   }
 
   launchProducers(pipeline);
-  launchConsumer(output_dir);
+  launchConsumer(output_dir, save_specs);
   for (const auto& path : image_paths) {
     for (int i = 0; i < iterations; ++i) {
       pathQueue_.push(path);
@@ -57,9 +57,9 @@ void ThreadController::launchProducers(Pipeline& pipeline) {
 }
 
 /** ThreadController launch consumer function **/
-void ThreadController::launchConsumer(const std::string& output_dir) {
+void ThreadController::launchConsumer(const std::string& output_dir, bool save_specs) {
   consumer_ =
-      std::thread([&, output_dir] { consumerThread(imageQueue_, output_dir); });
+      std::thread([&, output_dir, save_specs] { consumerThread(imageQueue_, output_dir, save_specs); });
 }
 
 /** ThreadController wait for completion function **/

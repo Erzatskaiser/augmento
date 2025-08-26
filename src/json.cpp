@@ -82,6 +82,10 @@ ConfigSpec parseConfigFile(const std::string& json_path) {
         config.verbose = bool(field.value());
       }
 
+      if (key == "save_specs") {
+        config.save_specs = bool(field.value());
+      }
+
       if (key == "seed") {
         config.seed = static_cast<size_t>(uint64_t(field.value()));
       }

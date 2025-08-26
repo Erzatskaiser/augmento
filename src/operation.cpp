@@ -162,6 +162,10 @@ CropImage::CropImage(int x, int y, int width, int height)
 }
 
 void CropImage::apply(Image& img, std::mt19937& rng) const {
+  const std::array<int, 2> dims = img.getDimensions();
+  if (x_ != -1 && (x_ > dims[0] || y_ > dims[0]))
+    throw std::invalid_argument(
+        "CropImage: Cannot initiate crop outside bounds");
   if (x_ == -1) {
     img.setData(randomCrop(img.getData(), w_, h_));
     img.logOperation("CropImage (random): " + std::to_string(w_) + "x" +

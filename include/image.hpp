@@ -19,6 +19,8 @@
 #include <opencv2/imgcodecs.hpp>
 #include <string>
 #include <vector>
+#include <array>
+#include <fstream>
 
 /**
  * @class Image
@@ -62,6 +64,9 @@ class Image {
 
   /// @return Image operation history.
   const std::vector<std::string>& getHistory() const;
+  
+  /// @return Image dimensions.
+  const std::array<int, 2> getDimensions() const;
 
   /**
    * @brief Set image data.
@@ -92,10 +97,18 @@ class Image {
   /**
    * @brief Save image to disk.
    * @param path Output directory or full file path.
-   * @param ext File extension (default ".png").
+   * @param ext File extension (default ".jpg").
    * @return 0 on success, -1 on failure.
    */
   int save(const std::string& path = "", const std::string& ext = ".jpg") const;
+
+  /**
+   * @brief Save image and operation history to disk
+   * @param path Output directory or full file path.
+   * @param ext File extension (default ".jpg")
+   * @return 0 on success, -1 on failure.
+   */
+  int saveWithHistory(const std::string& path = "", const std::string& ext = ".jpg") const;
 
  private:
   cv::Mat data_;                      ///< Raw image matrix.

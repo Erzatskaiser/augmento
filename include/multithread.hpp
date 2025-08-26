@@ -79,4 +79,4 @@ void producerPool(SafeQueue<fs::path>& pathQueue, SafeQueue<Image>& outputQueue,
 /**
  * @brief Consumer thread that saves augmented images and updates progress.
  */
-void consumerThread(SafeQueue<Image>& queue, const std::string& output_dir);
+void consumerThread(SafeQueue<Image>& queue, const std::string& output_dir, bool save_specs=false);

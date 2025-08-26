@@ -170,6 +170,14 @@ cv::Mat randomCrop(const cv::Mat &im, int width, int height) {
   int x = xdist(gen);
   int y = ydist(gen);
 
+  // Adjust ROI if needed to avoid out-of-bounds
+  if (x + width > im.rows) {
+    x = im.rows - width;
+  }
+  if (y + height > im.cols) {
+    y = im.cols - height;
+  }
+
   cv::Rect roi(x, y, width, height);
   cv::Mat crop = im(roi).clone();
   return crop;

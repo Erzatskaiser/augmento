@@ -48,6 +48,12 @@ const size_t Image::getId() const { return id_; }
 /* Return operation history */
 const std::vector<std::string>& Image::getHistory() const { return history_; }
 
+/* Return image dimensions */
+const std::array<int, 2> Image::getDimensions() const {
+  if (data_.empty()) return {0, 0};
+  return {data_.cols, data_.rows};
+}
+
 /* Log new opeartion to history */
 void Image::logOperation(const std::string& op) { history_.emplace_back(op); }
 
@@ -100,6 +106,54 @@ int Image::save(const std::string& path, const std::string& ext) const {
   bool success = params.empty()
                      ? cv::imwrite(outputPath.string(), data_)
                      : cv::imwrite(outputPath.string(), data_, params);
+
+  return success ? 0 : -1;
+}
+
+/* Save image to specified path and extension, together with operation history */
+int Image::saveWithHistory(const std::string& path, const std::string& ext) const {
+  // Decide on output directory
+  fs::path out_dir = path.empty() ? fs::current_path() : fs::path(path);
+
+  // Create output directory if it doesn't exist
+  if (!fs::exists(out_dir)) {
+    if (!fs::create_directories(out_dir)) return -1;
+  }
+
+  // Determine filename base
+  std::string base = name_.empty() ? "image" : fs::path(name_).stem().string();
+  std::string filename = base + "_" + std::to_string(id_) + ext;
+
+  // Final output path
+  fs::path outputPath = out_dir / filename;
+
+  // Decide on compression parameters
+  std::vector<int> params;
+  std::string lower_ext = ext;
+  std::transform(lower_ext.begin(), lower_ext.end(), lower_ext.begin(),
+                 ::tolower);
+
+  if (lower_ext == ".jpg" || lower_ext == ".jpeg")
+    params = {cv::IMWRITE_JPEG_QUALITY, 75};
+  else if (lower_ext == ".png")
+    params = {cv::IMWRITE_PNG_COMPRESSION, 1};
+  else if (lower_ext == ".webp") {
+    params = {cv::IMWRITE_WEBP_QUALITY, 80};
+  }
+
+  // Save image (with or without params
+  bool success = params.empty()
+                     ? cv::imwrite(outputPath.string(), data_)
+                     : cv::imwrite(outputPath.string(), data_, params);
+  
+  // Save operation history 
+  std::string history_filename = base + "_" + std::to_string(id_) + ".txt";
+  std::ofstream history_file(history_filename);
+  for (const std::string& op : history_) {
+    history_file << op << "\n";
+  }
+  history_file << std::flush;
+  history_file.close();
 
   return success ? 0 : -1;
 }
