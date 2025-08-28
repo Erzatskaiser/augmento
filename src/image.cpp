@@ -148,7 +148,8 @@ int Image::saveWithHistory(const std::string& path, const std::string& ext) cons
   
   // Save operation history 
   std::string history_filename = base + "_" + std::to_string(id_) + ".txt";
-  std::ofstream history_file(history_filename);
+  fs::path history_path = out_dir / history_filename;
+  std::ofstream history_file(history_path);
   for (const std::string& op : history_) {
     history_file << op << "\n";
   }

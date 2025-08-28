@@ -6,6 +6,7 @@
   "queue_capacity": 128,
   "seed": 671,
   "verbose": true,
+  "save_specs": true,
   "pipeline": [
     {
       "name": "rotate",
