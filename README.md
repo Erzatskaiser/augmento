@@ -59,6 +59,7 @@ with additional optional flags:
   "queue_capacity": "size of internal buffer (uint, default 128)",
   "seed": "seed for internal random number generator (uint)",
   "verbose": "verbosity of program (bool, default true)",
+  "save_specs": "save augmentation documentation for each image (bool, default false)",
   "pipeline": [
     {
       "name": "operation name",
