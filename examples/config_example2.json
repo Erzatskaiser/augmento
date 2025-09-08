@@ -1,5 +1,5 @@
 {
-  "input_dir": "./test/images",
+  "input_dir": "./images",
   "output_dir": "./output",
   "num_threads": 16,
   "iterations": 1,
@@ -10,28 +10,28 @@
   "pipeline": [
     {
       "name": "rotate",
-      "prob": 1,
+      "prob": 0.9,
       "params": [
         -20,
         30,
-        1
+        0.8
       ]
     },
     {
       "name": "crop",
-      "prob": 1,
+      "prob": 0.8,
       "params": [
-        5,
-        5
+        100,
+        100
       ]
     },
     {
       "name": "reflect",
-      "prob": 1
+      "prob": 0.3
     },
     {
       "name": "resize",
-      "prob": 1,
+      "prob": 0.6,
       "params": [
         0.78,
         1.1
@@ -39,7 +39,7 @@
     },
     {
       "name": "color jitter",
-      "prob": 1,
+      "prob": 0.5,
       "params": [
         1,
         1,
@@ -49,7 +49,7 @@
     },
     {
       "name": "inject noise",
-      "prob": 1,
+      "prob": 0.4,
       "params": [
         0,
         0.01,
@@ -59,7 +59,7 @@
     },
     {
       "name": "blur image",
-      "prob": 1,
+      "prob": 0.2,
       "params": [
         3,
         5
@@ -67,15 +67,15 @@
     },
     {
       "name": "sharpen image",
-      "prob": 1
+      "prob": 0.3
     },
     {
       "name": "histogram equalization",
-      "prob": 1
+      "prob": 0.4
     },
     {
       "name": "white balance",
-      "prob": 1
+      "prob": 0.4
     }
   ]
 }
