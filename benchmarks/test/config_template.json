@@ -2,7 +2,7 @@
   "input_dir": "./test/images",
   "output_dir": "./output",
   "num_threads": 16,
-  "iterations": 1,
+  "iterations": 15,
   "queue_capacity": 128,
   "seed": 671,
   "verbose": true,
@@ -34,7 +34,7 @@
       "prob": 1,
       "params": [
         0.78,
-        1.1
+        1
       ]
     },
     {

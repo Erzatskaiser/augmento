@@ -102,5 +102,6 @@ void SessionManager::launchThreads() {
   ThreadController thread_controller(config_.num_threads,
                                      config_.queue_capacity);
   thread_controller.run(image_paths_, config_.iterations, pipeline_,
-                        config_.output_dir, config_.verbose, config_.save_specs);
+                        config_.output_dir, config_.verbose,
+                        config_.save_specs);
 }

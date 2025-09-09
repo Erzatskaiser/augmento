@@ -110,8 +110,10 @@ int Image::save(const std::string& path, const std::string& ext) const {
   return success ? 0 : -1;
 }
 
-/* Save image to specified path and extension, together with operation history */
-int Image::saveWithHistory(const std::string& path, const std::string& ext) const {
+/* Save image to specified path and extension, together with operation history
+ */
+int Image::saveWithHistory(const std::string& path,
+                           const std::string& ext) const {
   // Decide on output directory
   fs::path out_dir = path.empty() ? fs::current_path() : fs::path(path);
 
@@ -145,15 +147,14 @@ int Image::saveWithHistory(const std::string& path, const std::string& ext) cons
   bool success = params.empty()
                      ? cv::imwrite(outputPath.string(), data_)
                      : cv::imwrite(outputPath.string(), data_, params);
-  
-  // Save operation history 
+
+  // Save operation history
   std::string history_filename = base + "_" + std::to_string(id_) + ".txt";
   fs::path history_path = out_dir / history_filename;
   std::ofstream history_file(history_path);
   for (const std::string& op : history_) {
     history_file << op << "\n";
   }
-  history_file << std::flush;
   history_file.close();
 
   return success ? 0 : -1;
